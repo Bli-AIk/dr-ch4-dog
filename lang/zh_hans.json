@@ -41,5 +41,10 @@
     "item_ultimate_candy_description": "闪耀着完美光辉。\n必须和大家分享。+??HP",
     "item_ultimate_candy_susieReaction": "喂！里面是空的！",
     "item_ultimate_candy_ralseiReaction": "我喜欢这个口感！",
-    "item_ultimate_candy_noelleReaction": "有点让人失望..."
+    "item_ultimate_candy_noelleReaction": "有点让人失望...",
+
+    // ---
+
+    "encounter_dog_start": "* 你感觉你要吃点骨头了！"
+
 }
