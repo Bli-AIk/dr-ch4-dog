@@ -45,7 +45,7 @@ function Dog:applyLocalization(update_acts)
     local old_tell_story = self.act_tell_story
 
     -- Enemy name
-    self.name = Game:loc("Annoying Dog", "enemy_dog_name")
+    self.name = Game:loc("[name:dog]")
     -- Check text (automatically has "ENEMY NAME - " at the start)
     self.check = Game:loc("AT 4 DF 0\n* Cotton heart and button eye\n* Looks just like a fluffy guy.", "enemy_dummy_check")
 
