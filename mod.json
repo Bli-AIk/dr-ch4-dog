@@ -1,10 +1,10 @@
 {
     // The ID of your project. Should be unique!!
-    "id": "thrash-machine",
+    "id": "dr-ch4-dog",
     // Displays on the main menu.
-    "name": "Thrash Machine",
+    "name": "Vs. Chapter4 Annoying Dog!!!",
     // Displays underneath the name. Optional.
-    "subtitle": "Kristal Lua template",
+    "subtitle": "dog ym ho",
 
     // The version of your project.
     "version": "v0.0.0", // x-release-please-version
@@ -96,5 +96,7 @@
     },
 
     // Whether or not to enable dev mode. Dev mode enables debug keys and the console.
-    "dev": true
+    "dev": true,
+
+    "encounter": "dummy"
 }
