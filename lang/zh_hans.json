@@ -45,6 +45,7 @@
 
     // ---
 
-    "encounter_dog_start": "* 你感觉你要吃点骨头了！"
+    "encounter_dog_start": "* 你感觉你要吃点骨头了！",
+    "enemy_dog_name": "神烦狗"
 
 }

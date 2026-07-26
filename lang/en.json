@@ -45,5 +45,7 @@
 
     // ---
 
-    "encounter_dog_start": "* You feel like you're going to have a bad bone."
+    "encounter_dog_start": "* You feel like you're going to have a bad bone.",
+    "enemy_dog_name": "Annoying Dog"
+
 }
