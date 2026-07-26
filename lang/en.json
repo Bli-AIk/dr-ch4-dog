@@ -41,5 +41,9 @@
     "item_ultimate_candy_description": "Sparkles with perfection.\nMust be shared with everyone. +??HP",
     "item_ultimate_candy_susieReaction": "Hey! It's hollow inside!",
     "item_ultimate_candy_ralseiReaction": "I like the texture!",
-    "item_ultimate_candy_noelleReaction": "That was underwhelming..."
+    "item_ultimate_candy_noelleReaction": "That was underwhelming...",
+
+    // ---
+
+    "encounter_dog_start": "* You feel like you're going to have a bad bone."
 }
