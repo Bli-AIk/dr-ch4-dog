@@ -55,16 +55,17 @@ function Dog:getEncounterText()
             return Game:loc("battle_dog_gb_kris_downed"), "teeth_b", "susie"
         end
 
-        local someone_was_damaged = false
+        local damaged_battlers = {}
         for _, battler in ipairs(Game.battle.party) do
             local starting_health = party_health and party_health[battler.chara.id]
             if starting_health and battler.chara:getHealth() < starting_health then
-                someone_was_damaged = true
-                break
+                table.insert(damaged_battlers, battler)
             end
         end
 
-        if someone_was_damaged then
+        if #damaged_battlers == 1 and damaged_battlers[1].chara.id == "susie" then
+            return Game:loc("battle_dog_gb_kris_downed"), "teeth_b", "susie"
+        elseif #damaged_battlers > 0 then
             local lowest_health_battler = nil
             for _, battler in ipairs(Game.battle.party) do
                 if battler.chara.id ~= "susie"
