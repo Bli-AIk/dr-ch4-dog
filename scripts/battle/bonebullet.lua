@@ -1,7 +1,7 @@
 ---@alias BoneAnchor "top"|"center"|"bottom"
 
 ---@class BoneBullet : Bullet
----@overload fun(x: number, y: number, length?: number, anchor?: BoneAnchor, direction?: number, speed?: number): BoneBullet
+---@overload fun(x: number, y: number, length?: number, anchor?: BoneAnchor): BoneBullet
 local BoneBullet, super = Class(Bullet)
 
 local ANCHOR_ORIGINS = {
@@ -14,13 +14,11 @@ local ANCHOR_ORIGINS = {
 ---@param y number # The Y position of the bullet.
 ---@param length? number # The full length of the bone in pixels.
 ---@param anchor? BoneAnchor # Which point of the bone is placed at x/y.
----@param direction? number # Optional movement direction, in radians.
----@param speed? number # Optional movement speed, in pixels per frame at 30FPS.
 ---@param top_texture string # The top cap texture.
 ---@param bottom_texture string # The bottom cap texture.
 ---@param fill_x number # The left edge of the opaque join, in texture pixels.
 ---@param fill_width number # The width of the opaque join, in texture pixels.
-function BoneBullet:init(x, y, length, anchor, direction, speed, top_texture, bottom_texture, fill_x, fill_width)
+function BoneBullet:init(x, y, length, anchor, top_texture, bottom_texture, fill_x, fill_width)
     super.init(self, x, y)
     self:setScale(1)
 
@@ -54,12 +52,6 @@ function BoneBullet:init(x, y, length, anchor, direction, speed, top_texture, bo
     -- Only the filled middle section can damage the soul.
     self:setHitbox(fill_x, top_sprite.height, fill_width, fill_height)
 
-    if direction then
-        self.physics.direction = direction
-    end
-    if speed then
-        self.physics.speed = speed
-    end
 end
 
 ---@param anchor BoneAnchor # Which point of the bone is placed at x/y.

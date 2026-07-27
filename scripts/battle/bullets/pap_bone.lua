@@ -6,17 +6,13 @@ local PapBone, super = Class(BoneBullet)
 ---@param y number # The Y position of the bullet.
 ---@param length? number # The full length of the bone in pixels.
 ---@param anchor? BoneAnchor # Which point of the bone is placed at x/y.
----@param direction? number # Optional movement direction, in radians.
----@param speed? number # Optional movement speed, in pixels per frame at 30FPS.
-function PapBone:init(x, y, length, anchor, direction, speed)
+function PapBone:init(x, y, length, anchor)
     super.init(
         self,
         x,
         y,
         length,
         anchor,
-        direction,
-        speed,
         "bullets/p_top_0",
         "bullets/p_bottom_0",
         4,
