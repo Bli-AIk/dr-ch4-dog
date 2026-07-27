@@ -16,7 +16,7 @@ function SansBone:init(x, y, length, anchor)
         "bullets/s_top_0",
         "bullets/s_bottom_0",
         1,
-        8
+        6
     )
 end
 

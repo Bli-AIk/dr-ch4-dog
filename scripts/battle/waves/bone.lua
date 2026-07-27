@@ -1,14 +1,17 @@
 ---@class Bone : Wave
 local Bone, super = Class(Wave)
 
--- 骨头从战斗框右侧移动到左侧所需的时间（秒）。
+-- 骨头从战斗框右侧移动到左侧所需的时间（秒）
 local TRAVEL_TIME = 2.0
 
--- 两对骨头生成之间的间隔时间（秒）。
+-- 两对骨头生成之间的间隔时间（秒）
 local SPAWN_INTERVAL = 0.5
 
--- 上下骨头之间的间距相对于灵魂高度的倍数。
+-- 上下骨头之间的间距相对于灵魂高度的倍数
 local SOUL_GAP_FACTOR = 1.25
+
+-- 空隙最大偏移量
+local MAX_GAP_OFFSET = 30
 
 -- 自定义 in-out-back 曲线的回弹幅度。
 local BACK_OVERSHOOT = 3.5
@@ -57,12 +60,15 @@ function Bone:onStart()
     local arena_bottom = arena:getBottom()
 
     local gap = soul.height * SOUL_GAP_FACTOR
-    local bone_length = (arena_bottom - arena_top - gap) / 2
 
     local function spawnPair()
-        local bone_type = MathUtils.randomInt(1, 2) == 1 and "sans_bone" or "pap_bone"
-        local top_bone = self:spawnBullet(bone_type, arena_right, arena_top, bone_length, "top")
-        local bottom_bone = self:spawnBullet(bone_type, arena_right, arena_bottom, bone_length, "bottom")
+        local bone_type = MathUtils.randomInt(1, 3) == 1 and "sans_bone" or "pap_bone"
+        local gap_offset = MathUtils.randomInt(-MAX_GAP_OFFSET, MAX_GAP_OFFSET + 1)
+        local gap_center = (arena_top + arena_bottom) / 2 + gap_offset
+        local top_length = gap_center - gap / 2 - arena_top
+        local bottom_length = arena_bottom - (gap_center + gap / 2)
+        local top_bone = self:spawnBullet(bone_type, arena_right, arena_top, top_length, "top")
+        local bottom_bone = self:spawnBullet(bone_type, arena_right, arena_bottom, bottom_length, "bottom")
 
         -- Keep the pair fully inside the arena horizontally.
         local start_x = arena_right - top_bone.width / 2
