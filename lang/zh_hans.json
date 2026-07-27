@@ -42,5 +42,23 @@
     "item_ultimate_candy_ralseiReaction": "我喜欢这个口感！",
     "item_ultimate_candy_noelleReaction": "有点让人失望...",
 
-    "encounter_dog_start": "* 你感觉你要吃点骨头了！"
+    "encounter_dog_start": "* 你感觉你要吃点骨头了！",
+
+    "enemy_dog_check": "攻击 1 防御 1\n* 吸收了一件神器与某件物品！[wait:5]\n* 它体内有什么阻止你碰到它。",
+    "enemy_dog_turn_1": "* [name:dog]正盯着你。",
+    "enemy_dog_turn_2": "* [name:dog]似乎藏着什么\n东西。",
+    "enemy_dog_turn_3": "* [name:dog]正在摇尾巴。",
+    "enemy_dog_low_health": "* [name:dog]看起来快要\n倒下了。",
+
+    "act_dog_pet": "抚摸",
+    "act_dog_pet_description": "前提是\n能碰到",
+    "act_dog_tell_joke": "讲笑话",
+    "act_dog_tell_joke_description": "或许有\n用？",
+    "act_dog_pet_text": "* 你伸手想碰[name:dog]。[wait:5]\n* 它躲开了。",
+    "act_dog_pet_party_text": "* 大家一起去摸狗狗...[wait:5]\n* 但是被它轻易地躲开了！",
+    "battle_dog_tell_joke_1": "* 大家一起想了一个烂双关笑话...[wait:5]",
+    "battle_dog_tell_joke_susie": "* 呃...[wait:5]\n* 为什么狗不能当歌手？",
+    "battle_dog_tell_joke_ralsei": "* 因为它会“汪”词！[wait:5][react:susie_reaction]",
+    "battle_dog_tell_joke_susie_reaction": "...",
+    "act_dog_standard": "* [var:name]伸手想碰[name:dog]。[wait:5]\n* 它躲开了。"
 }

@@ -4,7 +4,6 @@ function Dog:init()
     super.init(self)
 
     self:applyLocalization()
-    -- Sets the actor, which handles the enemy's sprites (see scripts/data/actors/dummy.lua)
     self:setActor("dog")
 
     -- Enemy health
@@ -32,35 +31,39 @@ function Dog:init()
         "..."
     }
 
-    -- Register act called "Smile"
-    self:registerAct(self.act_smile)
-    -- Register party act with Ralsei called "Tell Story"
-    -- (second argument is description, usually empty)
-    self:registerAct(self.act_tell_story, "", {"ralsei"})
+    -- Register the single-character and party versions of "Pet".
+    self:registerAct(self.act_pet, self.act_pet_description)
+    self:registerAct(self.act_pet_party, self.act_pet_description, {"susie", "ralsei"})
+    -- Register the party act "Tell Joke".
+    self:registerAct(self.act_tell_joke, self.act_tell_joke_description, {"susie", "ralsei"}, 100)
 end
 
 function Dog:applyLocalization(update_acts)
     local old_check = self.act_check
-    local old_smile = self.act_smile
-    local old_tell_story = self.act_tell_story
+    local old_pet = self.act_pet
+    local old_pet_party = self.act_pet_party
+    local old_tell_joke = self.act_tell_joke
 
     -- Enemy name
     self.name = Game:loc("[name:dog]")
     -- Check text (automatically has "ENEMY NAME - " at the start)
-    self.check = Game:loc("AT 4 DF 0\n* Cotton heart and button eye\n* Looks just like a fluffy guy.", "enemy_dummy_check")
+    self.check = Game:loc("AT 1 DF 1\n* Absorbed an artifact and some item![wait:5]\n* Something inside it is preventing you from touching it.", "enemy_dog_check")
 
     -- Text randomly displayed at the bottom of the screen each turn
     self.text = {
-        Game:loc("* The [name:dummy] gives you a soft\nsmile.", "enemy_dummy_turn_1"),
-        Game:loc("* The power of fluffy boys is\nin the air.", "enemy_dummy_turn_2"),
-        Game:loc("* Smells like cardboard.", "enemy_dummy_turn_3"),
+        Game:loc("* The [name:dog] is staring at you.", "enemy_dog_turn_1"),
+        Game:loc("* The [name:dog] seems to be hiding\nsomething.", "enemy_dog_turn_2"),
+        Game:loc("* The [name:dog] is wagging its tail.", "enemy_dog_turn_3"),
     }
     -- Text displayed at the bottom of the screen when the enemy has low health
-    self.low_health_text = Game:loc("* The [name:dummy] looks like it's\nabout to fall over.", "enemy_dummy_low_health")
+    self.low_health_text = Game:loc("* The [name:dog] looks like it's\nabout to fall over.", "enemy_dog_low_health")
 
     self.act_check = Game:loc("Check", "act_check")
-    self.act_smile = Game:loc("Smile", "act_dummy_smile")
-    self.act_tell_story = Game:loc("Tell Story", "act_dummy_tell_story")
+    self.act_pet = Game:loc("Pet", "act_dog_pet")
+    self.act_pet_party = self.act_pet
+    self.act_pet_description = Game:loc("Must be able to\ntouch it", "act_dog_pet_description")
+    self.act_tell_joke = Game:loc("Tell Joke", "act_dog_tell_joke")
+    self.act_tell_joke_description = Game:loc("Maybe it will\nbe useful?", "act_dog_tell_joke_description")
 
     if self.acts and self.acts[1] then
         self.acts[1].name = self.act_check
@@ -70,10 +73,12 @@ function Dog:applyLocalization(update_acts)
         for _, act in ipairs(self.acts or {}) do
             if act.name == old_check then
                 act.name = self.act_check
-            elseif act.name == old_smile then
-                act.name = self.act_smile
-            elseif act.name == old_tell_story then
-                act.name = self.act_tell_story
+            elseif act.name == old_pet or act.name == old_pet_party then
+                act.name = self.act_pet
+                act.description = self.act_pet_description
+            elseif act.name == old_tell_joke then
+                act.name = self.act_tell_joke
+                act.description = self.act_tell_joke_description
             end
         end
     end
@@ -83,41 +88,21 @@ function Dog:onAct(battler, name)
     if name == self.act_check then
         return super.onAct(self, battler, "Check")
 
-    elseif name == self.act_smile then
-        -- Give the enemy 100% mercy
-        self:addMercy(100)
-        -- Change this enemy's dialogue for 1 turn
-        self.dialogue_override = "... ^^"
-        -- Act text (since it's a list, multiple textboxes)
-        return {
-            Game:loc("* You smile.[wait:5]\n* The [name:dummy] smiles back.", "act_dummy_smile_1"),
-            Game:loc("* It seems the [name:dummy] just wanted\nto see you happy.", "act_dummy_smile_2")
-        }
-
-    elseif name == self.act_tell_story then
-        -- Loop through all enemies
-        for _, enemy in ipairs(Game.battle.enemies) do
-            -- Make the enemy tired
-            enemy:setTired(true)
+    elseif name == self.act_pet then
+        local action = Game.battle:getCurrentAction()
+        if action and action.party and #action.party > 0 then
+            return Game:loc("* You, [name:susie], and [name:ralsei]\npet the [name:dog].", "act_dog_pet_party_text")
         end
-        return Game:loc("* You and [name:ralsei] told the [name:dummy]\na bedtime story.\n* The enemies became [color:blue]TIRED[color:reset]...", "act_dummy_tell_story_text")
+        return Game:loc("* You reached for the [name:dog].[wait:5]\n* It moved away.", "act_dog_pet_text")
+
+    elseif name == self.act_tell_joke then
+        Game.battle:startActCutscene("dog", "tell_joke")
+        return
 
     elseif name == "Standard" then --X-Action
-        -- Give the enemy 50% mercy
-        self:addMercy(50)
-        if battler.chara.id == "ralsei" then
-            -- R-Action text
-            return Game:loc("* [name:ralsei] bowed politely.\n* The [name:dummy] spiritually bowed\nin return.", "act_dummy_ralsei_standard")
-        elseif battler.chara.id == "susie" then
-            -- S-Action: start a cutscene (see scripts/battle/cutscenes/dummy.lua)
-            Game.battle:startActCutscene("dummy", "susie_punch")
-            return
-        else
-            -- Text for any other character (like Noelle)
-            return Game:loc("* [var:name] straightened the\n[name:dummy]'s hat.", "act_dummy_other_standard", {
-                name = battler.chara:getName()
-            })
-        end
+        return Game:loc("* [var:name] reached for the\n[name:dog].[wait:5]\n* It moved away.", "act_dog_standard", {
+            name = battler.chara:getName()
+        })
     end
 
     -- If the act is none of the above, run the base onAct function
