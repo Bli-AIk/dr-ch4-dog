@@ -18,13 +18,13 @@ function GBTest:onStart()
         "gaster_blaster",
         center_x,
         arena_top - 80,
+        0,
         center_x,
         arena_top + 18,
         0,
-        0,
         45,
         45,
-        1.6
+        true
     )
 
     -- Follow with a horizontal shot to demonstrate rotation and exit motion.
@@ -33,13 +33,13 @@ function GBTest:onStart()
             "gaster_blaster",
             arena_right + 80,
             center_y,
+            90,
             arena_right - 18,
             center_y,
-            math.pi / 2,
-            math.pi / 2,
+            90,
             45,
             45,
-            1.6
+            true
         )
     end)
 end
