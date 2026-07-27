@@ -5,7 +5,7 @@ function Dog:init()
     super.init(self)
 
     -- Text displayed at the bottom of the screen at the start of the encounter
-    self.text = Game:loc("* what the dog...?", "encounter_dog_start")
+    self.text = Game:loc("encounter_dog_start")
 
     -- Battle music ("battle" is rude buster)
     self.music = "dog_buster"

@@ -45,25 +45,25 @@ function Dog:applyLocalization(update_acts)
     local old_tell_joke = self.act_tell_joke
 
     -- Enemy name
-    self.name = Game:loc("[name:dog]")
+    self.name = Game:locText("[name:dog]")
     -- Check text (automatically has "ENEMY NAME - " at the start)
-    self.check = Game:loc("AT 1 DF 1\n* Absorbed an artifact and some item![wait:5]\n* Something inside it is preventing you from touching it.", "enemy_dog_check")
+    self.check = Game:loc("enemy_dog_check")
 
     -- Text randomly displayed at the bottom of the screen each turn
     self.text = {
-        Game:loc("* The [name:dog] is staring at you.", "enemy_dog_turn_1"),
-        Game:loc("* The [name:dog] seems to be hiding\nsomething.", "enemy_dog_turn_2"),
-        Game:loc("* The [name:dog] is wagging its tail.", "enemy_dog_turn_3"),
+        Game:loc("enemy_dog_turn_1"),
+        Game:loc("enemy_dog_turn_2"),
+        Game:loc("enemy_dog_turn_3"),
     }
     -- Text displayed at the bottom of the screen when the enemy has low health
-    self.low_health_text = Game:loc("* The [name:dog] looks like it's\nabout to fall over.", "enemy_dog_low_health")
+    self.low_health_text = Game:loc("enemy_dog_low_health")
 
-    self.act_check = Game:loc("Check", "act_check")
-    self.act_pet = Game:loc("Pet", "act_dog_pet")
+    self.act_check = Game:loc("act_check")
+    self.act_pet = Game:loc("act_dog_pet")
     self.act_pet_party = self.act_pet
-    self.act_pet_description = Game:loc("Must be able to\ntouch it", "act_dog_pet_description")
-    self.act_tell_joke = Game:loc("Tell Joke", "act_dog_tell_joke")
-    self.act_tell_joke_description = Game:loc("Maybe it will\nbe useful?", "act_dog_tell_joke_description")
+    self.act_pet_description = Game:loc("act_dog_pet_description")
+    self.act_tell_joke = Game:loc("act_dog_tell_joke")
+    self.act_tell_joke_description = Game:loc("act_dog_tell_joke_description")
 
     if self.acts and self.acts[1] then
         self.acts[1].name = self.act_check
@@ -91,16 +91,16 @@ function Dog:onAct(battler, name)
     elseif name == self.act_pet then
         local action = Game.battle:getCurrentAction()
         if action and action.party and #action.party > 0 then
-            return Game:loc("* You, [name:susie], and [name:ralsei]\npet the [name:dog].", "act_dog_pet_party_text")
+            return Game:loc("act_dog_pet_party_text")
         end
-        return Game:loc("* You reached for the [name:dog].[wait:5]\n* It moved away.", "act_dog_pet_text")
+        return Game:loc("act_dog_pet_text")
 
     elseif name == self.act_tell_joke then
         Game.battle:startActCutscene("dog", "tell_joke")
         return
 
     elseif name == "Standard" then --X-Action
-        return Game:loc("* [var:name] reached for the\n[name:dog].[wait:5]\n* It moved away.", "act_dog_standard", {
+        return Game:loc("act_dog_standard", {
             name = battler.chara:getName()
         })
     end
