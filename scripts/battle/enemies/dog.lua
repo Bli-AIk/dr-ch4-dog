@@ -21,9 +21,7 @@ function Dog:init()
 
     -- List of possible wave ids, randomly picked each turn
     self.waves = {
-        "basic",
-        "aiming",
-        "movingarena"
+        "bone"
     }
 
     -- Dialogue randomly displayed in the enemy's speech bubble
