@@ -36,6 +36,21 @@ function Dog:init()
     self:registerAct(self.act_tell_joke, self.act_tell_joke_description, {"susie", "ralsei"}, 100)
 end
 
+-- The dog dodges every attack instead of taking damage.
+function Dog:getAttackDamage(damage, battler, points)
+    return 0
+end
+
+function Dog:hurt(amount, battler, on_defeat, color, show_status, attacked)
+    local sprite = self:getActiveSprite()
+    if not sprite or sprite.anim ~= "spin" then
+        self:setAnimation("spin")
+    end
+    if show_status ~= false then
+        self:statusMessage("msg", "miss_gold")
+    end
+end
+
 function Dog:applyLocalization(update_acts)
     local old_check = self.act_check
     local old_pet = self.act_pet
