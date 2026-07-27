@@ -42,5 +42,23 @@
     "item_ultimate_candy_ralseiReaction": "I like the texture!",
     "item_ultimate_candy_noelleReaction": "That was underwhelming...",
 
-    "encounter_dog_start": "* You feel like you're going to have a bad bone."
+    "encounter_dog_start": "* You feel like you're going to have a bad bone.",
+
+    "enemy_dog_check": "AT 1 DF 1\n* Absorbed an artifact and some item![wait:5]\n* Something inside it is preventing you from touching it.",
+    "enemy_dog_turn_1": "* The [name:dog] is staring at you.",
+    "enemy_dog_turn_2": "* The [name:dog] seems to be hiding\nsomething.",
+    "enemy_dog_turn_3": "* The [name:dog] is wagging its tail.",
+    "enemy_dog_low_health": "* The [name:dog] looks like it's\nabout to fall over.",
+
+    "act_dog_pet": "Pet",
+    "act_dog_pet_description": "Must be able to\ntouch it",
+    "act_dog_tell_joke": "Tell Joke",
+    "act_dog_tell_joke_description": "Maybe it will\nbe useful?",
+    "act_dog_pet_text": "* You reached for the [name:dog].[wait:5]\n* It moved away.",
+    "act_dog_pet_party_text": "* Everyone went to pet the dog...[wait:5]\n* But it easily dodged them!",
+    "battle_dog_tell_joke_1": "* Everyone came up with a terrible pun...[wait:5]",
+    "battle_dog_tell_joke_susie": "* Uh...[wait:5]\n* Why can't a dog be a singer?",
+    "battle_dog_tell_joke_ralsei": "* Because it always PAWS halfway through![wait:5][react:susie_reaction]",
+    "battle_dog_tell_joke_susie_reaction": "...",
+    "act_dog_standard": "* [var:name] reached for the\n[name:dog].[wait:5]\n* It moved away."
 }

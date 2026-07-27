@@ -6,12 +6,12 @@ function actor:init()
     -- Display name (optional)
     self.name = "Annoying Dog"
 
-    -- Width and height for this actor, used to determine its center
-    self.width = 27
-    self.height = 45
+    -- Match the largest frame in the dog animations (idle_2 is 22x19).
+    self.width = 22
+    self.height = 19
 
     -- Hitbox for this actor in the overworld (optional, uses width and height by default)
-    self.hitbox = { 0, 25, 19, 14 }
+    self.hitbox = { 0, 5, 22, 14 }
 
     -- Color for this actor used in outline areas (optional, defaults to red)
     self.color = { 1, 0, 0 }
@@ -47,7 +47,7 @@ function actor:init()
 
     -- Table of sprite offsets (indexed by sprite name)
     self.offsets = {
-        -- Since the width and height is the idle sprite size, the offset is 0,0
+        -- The actor dimensions cover all animation frames, so no offset is needed.
         ["idle"] = { 0, 0 },
     }
 end
