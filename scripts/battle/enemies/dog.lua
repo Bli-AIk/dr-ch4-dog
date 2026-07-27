@@ -22,7 +22,8 @@ function Dog:init()
     -- List of possible wave ids, randomly picked each turn
     self.waves = {
         "bone",
-        "gb"
+        "gb",
+        "car"
     }
 
     -- Dialogue randomly displayed in the enemy's speech bubble
@@ -40,6 +41,10 @@ end
 -- The dog dodges every attack instead of taking damage.
 function Dog:getAttackDamage(damage, battler, points)
     return 0
+end
+
+function Dog:onBubbleSpawn(bubble)
+    bubble.text.talk_sprite = self:getActiveSprite()
 end
 
 function Dog:getEncounterText()
