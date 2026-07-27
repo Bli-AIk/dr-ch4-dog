@@ -18,6 +18,8 @@ function PapBone:init(x, y, length, anchor)
         4,
         5
     )
+
+    self.damage = 66
 end
 
 return PapBone

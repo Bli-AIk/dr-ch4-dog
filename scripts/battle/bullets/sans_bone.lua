@@ -15,9 +15,12 @@ function SansBone:init(x, y, length, anchor)
         anchor,
         "bullets/s_top_0",
         "bullets/s_bottom_0",
-        1,
+        2,
         6
     )
+
+    self.inv_timer = 0
+    self.destroy_on_hit = false
 end
 
 return SansBone
