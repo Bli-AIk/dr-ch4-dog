@@ -20,14 +20,14 @@ end
 
 function Bullet:getDamage()
     if self:isBullet("gaster_blaster") then
-        return 1
+        return self.damage or 1
     end
     return super.getDamage(self)
 end
 
 function Bullet:getInvulnTime()
     if self:isBullet("gaster_blaster") then
-        return 1 / 30
+        return self.inv_timer or 1 / 30
     end
     return super.getInvulnTime(self)
 end

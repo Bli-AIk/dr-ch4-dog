@@ -50,6 +50,16 @@ local BLAST_TIME = 45
 local BLAST_WARMUP_FRAMES = 5
 -- GB 光束的消散帧数
 local BLAST_FADE_FRAMES = 20
+-- GB 光束每次命中的伤害
+local BLAST_DAMAGE = 66
+-- GB 光束重复伤害的间隔
+local BLAST_INVULN_TIME = 6 / FPS
+-- GB 目标权重：Kris 和 Ralsei 比 Susie 更容易被选中
+local TARGET_WEIGHTS = {
+    {id = "kris", weight = 2},
+    {id = "ralsei", weight = 2},
+    {id = "susie", weight = 1},
+}
 
 -- Dog 白色覆盖的褪去时长
 local WHITE_FADE_TIME = 0.5
@@ -159,6 +169,36 @@ local function playSpin(battler, loops_left, callback)
             callback()
         end
     end)
+end
+
+local function pickGBTarget()
+    local candidates = {}
+    local total_weight = 0
+
+    for _, entry in ipairs(TARGET_WEIGHTS) do
+        local battler = Game.battle:getPartyBattler(entry.id)
+        if battler and battler:canTarget() then
+            total_weight = total_weight + entry.weight
+            table.insert(candidates, {
+                battler = battler,
+                weight = entry.weight,
+            })
+        end
+    end
+
+    if total_weight == 0 then
+        return Game.battle:randomTarget()
+    end
+
+    local roll = love.math.random() * total_weight
+    for _, candidate in ipairs(candidates) do
+        roll = roll - candidate.weight
+        if roll < 0 then
+            return candidate.battler
+        end
+    end
+
+    return candidates[#candidates].battler
 end
 
 function GB:init()
@@ -330,6 +370,8 @@ function GB:spawnBlaster()
         BLAST_TIME,
         true
     )
+    bullet.damage = BLAST_DAMAGE
+    bullet.inv_timer = BLAST_INVULN_TIME
 
     -- Skip the library's linear approach and let the wave own the entry
     -- motion. The final point stays above the arena's top position.
@@ -376,10 +418,17 @@ function GB:onStart()
     local attackers = self:getAttackers()
     self.dog = attackers[1]
 
+    self.party_health = {}
+    for _, battler in ipairs(Game.battle.party) do
+        self.party_health[battler.chara.id] = battler.chara:getHealth()
+    end
+
     if not self.dog then
         self:spawnBlaster()
         return
     end
+
+    self.dog.current_target = pickGBTarget()
 
     self:spawnCircle()
     self.white_fx = self.dog:addFX(ColorMaskFX({1, 1, 1}, 0), "gb_white")
@@ -399,6 +448,10 @@ function GB:onStart()
 end
 
 function GB:onEnd()
+    if self.dog then
+        self.dog.gb_party_health = self.party_health
+    end
+
     if self.white_fx and self.dog then
         self.dog:removeFX(self.white_fx)
         self.white_fx = nil

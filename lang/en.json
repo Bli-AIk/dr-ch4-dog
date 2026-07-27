@@ -60,5 +60,8 @@
     "battle_dog_tell_joke_susie": "* Uh...[wait:5]\n* Why can't a dog be a singer?",
     "battle_dog_tell_joke_ralsei": "* Because it always PAWS halfway through![wait:5][react:susie_reaction]",
     "battle_dog_tell_joke_susie_reaction": "...",
+    "battle_dog_gb_undamaged": "* Whoa,[wait:5] a cannon?![wait:5]\nThat's so cool![wait:5]",
+    "battle_dog_gb_damaged": "* Damn![wait:5] [var:name],[wait:5]\nare you blocking a cannon with your face?![wait:5]",
+    "battle_dog_gb_kris_downed": "* What?![wait:5]\nThis thing does that much damage?![wait:5]",
     "act_dog_standard": "* [var:name] reached for the\n[name:dog].[wait:5]\n* It moved away."
 }
