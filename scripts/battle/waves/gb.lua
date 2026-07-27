@@ -53,6 +53,20 @@ local BLAST_FADE_FRAMES = 20
 
 -- Dog 白色覆盖的褪去时长
 local WHITE_FADE_TIME = 0.5
+-- 旋转完成后 Dog 复制体的持续时长
+local DOG_FLASH_TIME = 0.5
+-- 旋转完成后 Dog 复制体的初始缩放
+local DOG_FLASH_START_SCALE = 2
+-- 旋转完成后 Dog 复制体的最大缩放
+local DOG_FLASH_SCALE = 4
+
+-- 中央矩形出现到旋转完成的时长
+local CENTER_RECTANGLE_TIME = 0.5
+-- 中央矩形的宽度
+local CENTER_RECTANGLE_WIDTH = 5
+-- 中央矩形结束时的缩放
+local CENTER_RECTANGLE_END_SCALE = 0
+
 -- 回合结束前的额外缓冲时长
 local WAVE_BUFFER = 1 / 3
 
@@ -155,6 +169,8 @@ function GB:init()
     self.white_fx = nil
     self.circle = nil
     self.particle_spawn_timer = nil
+    self.dog_flash = nil
+    self.center_rectangle = nil
 end
 
 function GB:getParticleSpawnInterval()
@@ -233,6 +249,68 @@ function GB:spawnParticle()
     self:spawnObject(particle)
 end
 
+function GB:spawnDogFlash()
+    local source_sprite = self.dog:getActiveSprite()
+    if not source_sprite or not source_sprite.texture then
+        return
+    end
+
+    local center_x, center_y = self.dog:getRelativePos(
+        self.dog.width / 2,
+        self.dog.height / 2,
+        Game.battle
+    )
+    local dog_flash = Sprite(
+        source_sprite.texture,
+        center_x,
+        center_y,
+        source_sprite.width,
+        source_sprite.height
+    )
+    dog_flash:setOrigin(0.5, 0.5)
+    dog_flash:setScale(DOG_FLASH_START_SCALE)
+    dog_flash.layer = self.dog.layer + 1
+    self.dog_flash = self:spawnObject(dog_flash)
+
+    self.timer:tween(
+        DOG_FLASH_TIME,
+        dog_flash,
+        {scale_x = DOG_FLASH_SCALE, scale_y = DOG_FLASH_SCALE, alpha = 0},
+        "linear",
+        function()
+            if dog_flash.parent then
+                dog_flash:remove()
+            end
+            if self.dog_flash == dog_flash then
+                self.dog_flash = nil
+            end
+        end
+    )
+end
+
+function GB:spawnCenterRectangle()
+    local center_x = self.dog:getRelativePos(self.dog.width / 2, 0, Game.battle)
+    local rectangle = Rectangle(center_x, SCREEN_HEIGHT / 2, CENTER_RECTANGLE_WIDTH, SCREEN_HEIGHT)
+    rectangle:setOrigin(0.5, 0.5)
+    rectangle.layer = self.dog.layer + 0.5
+    self.center_rectangle = self:spawnObject(rectangle)
+
+    self.timer:tween(
+        CENTER_RECTANGLE_TIME,
+        rectangle,
+        {scale_x = CENTER_RECTANGLE_END_SCALE, scale_y = CENTER_RECTANGLE_END_SCALE},
+        "out-cubic",
+        function()
+            if rectangle.parent then
+                rectangle:remove()
+            end
+            if self.center_rectangle == rectangle then
+                self.center_rectangle = nil
+            end
+        end
+    )
+end
+
 function GB:spawnBlaster()
     local arena = Game.battle.arena
     local center_x = arena:getCenter()
@@ -308,8 +386,14 @@ function GB:onStart()
     self.timer:tween(SPIN_TIME * (SPIN_LOOPS - 1) / SPIN_LOOPS, self.white_fx, {amount = 1}, "linear")
     self:spawnParticle()
     self.particle_spawn_timer = self:getParticleSpawnInterval()
+    self.timer:after(SPIN_TIME - CENTER_RECTANGLE_TIME, function()
+        if self.dog then
+            self:spawnCenterRectangle()
+        end
+    end)
 
     playSpin(self.dog, SPIN_LOOPS, function()
+        self:spawnDogFlash()
         self:spawnBlaster()
     end)
 end
@@ -322,6 +406,15 @@ function GB:onEnd()
 
     if self.dog then
         self.dog:setAnimation("idle")
+    end
+
+    if self.dog_flash then
+        self.dog_flash:remove()
+        self.dog_flash = nil
+    end
+    if self.center_rectangle then
+        self.center_rectangle:remove()
+        self.center_rectangle = nil
     end
 end
 
