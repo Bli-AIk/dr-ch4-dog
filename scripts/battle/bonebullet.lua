@@ -63,4 +63,10 @@ function BoneBullet:setAnchor(anchor)
     self:setOrigin(0.5, origin_y)
 end
 
+-- Bones below the arena are hidden by it and cannot hit or graze the soul.
+function BoneBullet:setLayer(layer)
+    super.setLayer(self, layer)
+    self.collidable = layer >= BATTLE_LAYERS["arena"]
+end
+
 return BoneBullet
