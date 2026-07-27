@@ -42,7 +42,7 @@ function actor:init()
         -- Looping animation with 0.25 seconds between each frame
         -- (even though there's only 1 idle frame)
         ["idle"] = { "idle/idle", 0.25, true },
-        ["spin"] = { "spin/spin", 0.25, true },
+        ["spin"] = { "spin/spin", 1 / 30, false, next = "idle" },
     }
 
     -- Table of sprite offsets (indexed by sprite name)
