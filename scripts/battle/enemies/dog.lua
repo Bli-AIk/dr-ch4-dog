@@ -27,7 +27,7 @@ function Dog:init()
 
     -- Dialogue randomly displayed in the enemy's speech bubble
     self.dialogue = {
-        "..."
+        "汪"
     }
 
     -- Register the single-character and party versions of "Pet".
