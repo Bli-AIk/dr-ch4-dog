@@ -25,5 +25,14 @@ return {
                 }
             }
         )
+
+        -- These lines are narration, so they intentionally have no portrait.
+        cutscene:setSpeaker(nil)
+        cutscene:text(
+            Game:loc("battle_dog_tell_joke_dog")
+                .. "[wait:1s][sound:mus_rimshot]\n"
+                .. Game:loc("battle_dog_tell_joke_inside")
+        )
+        cutscene:text(Game:loc("battle_dog_tell_joke_touch"))
     end
 }
