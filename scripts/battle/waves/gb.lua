@@ -63,6 +63,10 @@ local TARGET_WEIGHTS = {
 
 -- Dog 白色覆盖的褪去时长
 local WHITE_FADE_TIME = 0.5
+-- Dog eye 动画使用的帧间隔
+local EYE_FRAME_TIME = 3 / FPS
+-- Dog eye 动画的资源路径
+local EYE_SPRITE = "enemies/dog/eye/"
 -- 旋转完成后 Dog 复制体的持续时长
 local DOG_FLASH_TIME = 0.5
 -- 旋转完成后 Dog 复制体的初始缩放
@@ -210,6 +214,7 @@ function GB:init()
     self.circle = nil
     self.particle_spawn_timer = nil
     self.dog_flash = nil
+    self.eye = nil
     self.center_rectangle = nil
 end
 
@@ -328,6 +333,39 @@ function GB:spawnDogFlash()
     )
 end
 
+function GB:spawnEye()
+    if not self.dog then
+        return
+    end
+
+    if self.eye then
+        self.eye:remove()
+        self.eye = nil
+    end
+
+    local source_sprite = self.dog:getActiveSprite()
+    local eye = Sprite(EYE_SPRITE, source_sprite and source_sprite.x or 0, source_sprite and source_sprite.y or 0)
+    eye.layer = (source_sprite and source_sprite.layer or 0) + 1
+    self.eye = self.dog:addChild(eye)
+
+    eye:setAnimation({
+        EYE_SPRITE,
+        EYE_FRAME_TIME,
+        false,
+        frames = {"1-6"},
+        callback = function(sprite)
+            if self.eye == sprite and sprite.parent then
+                sprite:setAnimation({
+                    EYE_SPRITE,
+                    EYE_FRAME_TIME,
+                    true,
+                    frames = {1, 6},
+                })
+            end
+        end,
+    })
+end
+
 function GB:spawnCenterRectangle()
     local center_x = self.dog:getRelativePos(self.dog.width / 2, 0, Game.battle)
     local rectangle = Rectangle(center_x, SCREEN_HEIGHT / 2, CENTER_RECTANGLE_WIDTH, SCREEN_HEIGHT)
@@ -415,6 +453,8 @@ function GB:spawnBlaster()
 end
 
 function GB:onStart()
+    Assets.playSound("snd_knight_stretch", 1, 0.75)
+
     local attackers = self:getAttackers()
     self.dog = attackers[1]
 
@@ -442,6 +482,8 @@ function GB:onStart()
     end)
 
     playSpin(self.dog, SPIN_LOOPS, function()
+        Assets.playSound("snd_dogresidue")
+        self:spawnEye()
         self:spawnDogFlash()
         self:spawnBlaster()
     end)
@@ -464,6 +506,10 @@ function GB:onEnd()
     if self.dog_flash then
         self.dog_flash:remove()
         self.dog_flash = nil
+    end
+    if self.eye then
+        self.eye:remove()
+        self.eye = nil
     end
     if self.center_rectangle then
         self.center_rectangle:remove()
