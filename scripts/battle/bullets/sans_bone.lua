@@ -19,8 +19,10 @@ function SansBone:init(x, y, length, anchor)
         6
     )
 
-    self.inv_timer = 0
+    self.inv_timer = 1 / 30
     self.destroy_on_hit = false
+
+    self.damage = 1
 end
 
 return SansBone
