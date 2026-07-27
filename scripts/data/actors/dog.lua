@@ -35,13 +35,17 @@ function actor:init()
     self.can_blush = false
 
     -- Table of talk sprites and their talk speeds (default 0.25)
-    self.talk_sprites = {}
+    self.talk_sprites = {
+        ["speak/"] = 1 / 6,
+    }
 
     -- Table of sprite animations
     self.animations = {
         -- Looping animation with 0.25 seconds between each frame
         -- (even though there's only 1 idle frame)
         ["idle"] = { "idle/idle", 0.25, true },
+        ["speak"] = { "speak/", 1 / 6, true },
+        ["car"] = { "car/", 1 / 6, true },
         ["spin"] = { "spin/spin", 1 / 30, false, next = "idle" },
     }
 
@@ -49,7 +53,20 @@ function actor:init()
     self.offsets = {
         -- The actor dimensions cover all animation frames, so no offset is needed.
         ["idle"] = { 0, 0 },
+        ["car/"] = { -9, -23 },
     }
+end
+
+function actor:onTalkStart(text, sprite)
+    if sprite.sprite == "idle/idle" then
+        sprite:setAnimation("speak")
+    end
+end
+
+function actor:onTalkEnd(text, sprite)
+    if sprite.sprite == "speak/" then
+        sprite:setAnimation("idle")
+    end
 end
 
 return actor
