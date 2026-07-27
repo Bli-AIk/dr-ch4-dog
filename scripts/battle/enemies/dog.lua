@@ -91,7 +91,16 @@ function Dog:onAct(battler, name)
     elseif name == self.act_pet then
         local action = Game.battle:getCurrentAction()
         if action and action.party and #action.party > 0 then
-            return Game:loc("act_dog_pet_party_text")
+            Game.battle:startActCutscene(function(cutscene)
+                cutscene:text(Game:loc("act_dog_pet_party_text"), {
+                    functions = {
+                        dog_pet_miss = function()
+                            self:statusMessage("msg", "miss")
+                        end
+                    }
+                })
+            end)
+            return
         end
         return Game:loc("act_dog_pet_text")
 
