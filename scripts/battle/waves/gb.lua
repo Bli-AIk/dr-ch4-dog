@@ -24,6 +24,19 @@ local CIRCLE_INTRO_TIME = 9 / FPS
 -- 圆形绘制使用的分段数
 local CIRCLE_SEGMENTS = 96
 
+-- 白色粒子的最短生成间隔
+local PARTICLE_MIN_SPAWN_INTERVAL = 1 / FPS / 10
+-- 白色粒子的最长生成间隔
+local PARTICLE_MAX_SPAWN_INTERVAL = 5 / FPS
+-- 白色粒子的最小半径
+local PARTICLE_MIN_RADIUS = 1.5
+-- 白色粒子的最大半径
+local PARTICLE_MAX_RADIUS = 4
+-- 白色粒子飞向中心的最短时间
+local PARTICLE_MIN_TRAVEL_TIME = 12 / FPS
+-- 白色粒子飞向中心的最长时间
+local PARTICLE_MAX_TRAVEL_TIME = 20 / FPS
+
 -- GB 滑入战斗框的时长
 local ENTRY_TIME = 1
 -- GB 发射前的等待帧数
@@ -77,6 +90,44 @@ function GBCircle:draw()
     love.graphics.setShader(old_shader)
 end
 
+local GBParticle, particle_super = Class(Object)
+
+function GBParticle:init(x, y, target_x, target_y, radius, travel_time)
+    particle_super.init(self, x, y, radius * 2, radius * 2)
+
+    self.start_x = x
+    self.start_y = y
+    self.target_x = target_x
+    self.target_y = target_y
+    self.radius = radius
+    self.travel_time = travel_time
+    self.progress = 0
+    self.layer = 1
+end
+
+function GBParticle:update()
+    particle_super.update(self)
+
+    self.progress = self.progress + DT / self.travel_time
+    local progress = math.min(self.progress, 1)
+    local eased_progress = 1 - (1 - progress) ^ 3
+
+    self.x = self.start_x + (self.target_x - self.start_x) * eased_progress
+    self.y = self.start_y + (self.target_y - self.start_y) * eased_progress
+
+    if self.progress >= 1 then
+        self:remove()
+    end
+end
+
+function GBParticle:draw()
+    local old_r, old_g, old_b, old_a = love.graphics.getColor()
+
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.circle("fill", 0, 0, self.radius, CIRCLE_SEGMENTS)
+    love.graphics.setColor(old_r, old_g, old_b, old_a)
+end
+
 local function getWaveTime()
     return SPIN_TIME
         + ENTRY_TIME
@@ -103,6 +154,33 @@ function GB:init()
     self.dog = nil
     self.white_fx = nil
     self.circle = nil
+    self.particle_spawn_timer = nil
+end
+
+function GB:getParticleSpawnInterval()
+    -- 让较长的生成间隔更常出现
+    local bias = math.sqrt(love.math.random())
+    return PARTICLE_MIN_SPAWN_INTERVAL
+        + bias * (PARTICLE_MAX_SPAWN_INTERVAL - PARTICLE_MIN_SPAWN_INTERVAL)
+end
+
+function GB:update()
+    super.update(self)
+
+    if not self.particle_spawn_timer then
+        return
+    end
+
+    if not self.circle or not self.white_fx or self.white_fx.amount >= 1 then
+        self.particle_spawn_timer = nil
+        return
+    end
+
+    self.particle_spawn_timer = self.particle_spawn_timer - DT
+    while self.particle_spawn_timer <= 0 do
+        self:spawnParticle()
+        self.particle_spawn_timer = self.particle_spawn_timer + self:getParticleSpawnInterval()
+    end
 end
 
 function GB:spawnCircle()
@@ -133,6 +211,26 @@ function GB:spawnCircle()
             )
         end
     )
+end
+
+function GB:spawnParticle()
+    if not self.circle or self.circle.radius <= 0 then
+        return
+    end
+
+    local angle = love.math.random() * math.pi * 2
+    local radius = PARTICLE_MIN_RADIUS
+        + love.math.random() * (PARTICLE_MAX_RADIUS - PARTICLE_MIN_RADIUS)
+    local spawn_radius = math.max(self.circle.radius - radius * 0.25, 0)
+    local center_x, center_y = self.circle.x, self.circle.y
+    local x = center_x + math.cos(angle) * spawn_radius
+    local y = center_y + math.sin(angle) * spawn_radius
+    local travel_time = PARTICLE_MIN_TRAVEL_TIME
+        + love.math.random() * (PARTICLE_MAX_TRAVEL_TIME - PARTICLE_MIN_TRAVEL_TIME)
+
+    local particle = GBParticle(x, y, center_x, center_y, radius, travel_time)
+    particle.layer = self.circle.layer + 0.1
+    self:spawnObject(particle)
 end
 
 function GB:spawnBlaster()
@@ -208,6 +306,8 @@ function GB:onStart()
     self:spawnCircle()
     self.white_fx = self.dog:addFX(ColorMaskFX({1, 1, 1}, 0), "gb_white")
     self.timer:tween(SPIN_TIME * (SPIN_LOOPS - 1) / SPIN_LOOPS, self.white_fx, {amount = 1}, "linear")
+    self:spawnParticle()
+    self.particle_spawn_timer = self:getParticleSpawnInterval()
 
     playSpin(self.dog, SPIN_LOOPS, function()
         self:spawnBlaster()
