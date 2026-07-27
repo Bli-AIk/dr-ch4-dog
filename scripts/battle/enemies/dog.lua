@@ -42,6 +42,75 @@ function Dog:getAttackDamage(damage, battler, points)
     return 0
 end
 
+function Dog:getEncounterText()
+    if self.gb_narration_pending then
+        self.gb_narration_pending = nil
+
+        local party_health = self.gb_party_health
+        local someone_was_down = self.gb_party_was_down
+        self.gb_party_health = nil
+        self.gb_party_was_down = nil
+
+        if someone_was_down then
+            return Game:loc("battle_dog_gb_kris_downed"), "teeth_b", "susie"
+        end
+
+        local someone_was_damaged = false
+        for _, battler in ipairs(Game.battle.party) do
+            local starting_health = party_health and party_health[battler.chara.id]
+            if starting_health and battler.chara:getHealth() < starting_health then
+                someone_was_damaged = true
+                break
+            end
+        end
+
+        if someone_was_damaged then
+            local lowest_health_battler = nil
+            for _, battler in ipairs(Game.battle.party) do
+                if battler.chara.id ~= "susie"
+                    and (not lowest_health_battler
+                        or battler.chara:getHealth() < lowest_health_battler.chara:getHealth())
+                then
+                    lowest_health_battler = battler
+                end
+            end
+
+            local name = lowest_health_battler
+                and Game:locText("[name:" .. lowest_health_battler.chara.id .. "]")
+                or Game:locText("[name:kris]")
+            return Game:loc("battle_dog_gb_damaged", {name = name}), "intense_angry", "susie"
+        else
+            return Game:loc("battle_dog_gb_undamaged"), "surprise_smile", "susie"
+        end
+    end
+
+    return super.getEncounterText(self)
+end
+
+function Dog:onTurnEnd()
+    if self.selected_wave ~= "gb" then
+        self.gb_narration_pending = false
+        self.gb_party_health = nil
+        self.gb_party_was_down = nil
+        return
+    end
+
+    local susie = Game.battle:getPartyBattler("susie")
+    self.gb_party_was_down = false
+    for _, battler in ipairs(Game.battle.party) do
+        if battler.is_down then
+            self.gb_party_was_down = true
+            break
+        end
+    end
+
+    self.gb_narration_pending = susie and not susie.is_down or false
+    if not self.gb_narration_pending then
+        self.gb_party_health = nil
+        self.gb_party_was_down = nil
+    end
+end
+
 function Dog:hurt(amount, battler, on_defeat, color, show_status, attacked)
     local sprite = self:getActiveSprite()
     if not sprite or sprite.anim ~= "spin" then
