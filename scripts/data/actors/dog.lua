@@ -24,7 +24,7 @@ function actor:init()
     -- This actor's default sprite or animation, relative to the path (defaults to "")
     self.default = "idle"
 
-    -- Sound to play when this actor speaks (optional)
+    -- Dog dialogue plays its sound explicitly, so it has no default voice.
     self.voice = nil
     -- Path to this actor's portrait for dialogue (optional)
     self.portrait_path = nil

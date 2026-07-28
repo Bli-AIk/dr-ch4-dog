@@ -19,17 +19,15 @@ function Dog:init()
     -- Mercy given when sparing this enemy before its spareable (20% for basic enemies)
     self.spare_points = 20
 
-    -- List of possible wave ids, randomly picked each turn
+    -- Waves used after the first three turns, which are selected in order below.
     self.waves = {
         "bone",
         "gb",
         "car"
     }
 
-    -- Dialogue randomly displayed in the enemy's speech bubble
-    self.dialogue = {
-        "汪"
-    }
+    -- The dog only speaks through the one-turn override set after Tell Joke.
+    self.dialogue = {}
 
     -- Register the single-character and party versions of "Pet".
     self:registerAct(self.act_pet, self.act_pet_description)
@@ -41,6 +39,22 @@ end
 -- The dog dodges every attack instead of taking damage.
 function Dog:getAttackDamage(damage, battler, points)
     return 0
+end
+
+function Dog:selectWave()
+    local fixed_waves = {
+        "bone",
+        "gb",
+        "car"
+    }
+    local turn = Game.battle.turn_count
+
+    if turn >= 1 and turn <= #fixed_waves then
+        self.selected_wave = fixed_waves[turn]
+        return self.selected_wave
+    end
+
+    return super.selectWave(self)
 end
 
 function Dog:onBubbleSpawn(bubble)
@@ -194,7 +208,11 @@ function Dog:onAct(battler, name)
         return Game:loc("act_dog_pet_text")
 
     elseif name == self.act_tell_joke then
-        Game.battle:startActCutscene("dog", "tell_joke")
+        local cutscene = Game.battle:startActCutscene("dog", "tell_joke")
+        cutscene:after(function()
+            self.dialogue_override = "[instant][sound:voice/sans]"
+                .. Game:loc("battle_dog_dialogue")
+        end)
         return
 
     elseif name == "Standard" then --X-Action
