@@ -10,7 +10,7 @@ local function addFloatingProp(dog, texture, x, from_y, to_y)
     prop.layer = 1
 
     local function continueFloating(current_y, target_y)
-        if not prop.parent then
+        if not dog.parent or not prop.parent then
             return
         end
         Game.battle.timer:tween(
