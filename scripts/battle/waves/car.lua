@@ -1,21 +1,38 @@
 ---@class Car : Wave
+-- Car 回合类及其 Wave 父类
 local Car, super = Class(Wave)
 
+-- 游戏使用的帧率
 local FPS = 30
+-- Dog 翻转到横向缩放 0 的时长
 local FLIP_HALF_TIME = 4 / FPS
+-- Dog 从反向缩放恢复到正向缩放的时长
 local FLIP_BACK_TIME = 8 / FPS
+-- 翻转完成后第一次向右后撤的时长
 local INTRO_TIME = 12 / FPS
+-- 第一次后撤的最小距离
 local INTRO_DISTANCE = 30
+-- Dog 向左冲撞的时长
 local CHARGE_TIME = 5 / FPS
+-- 每次撞击后向右后撤的时长
 local RETREAT_TIME = 3 / FPS
+-- 每次后撤的距离
 local RETREAT_DISTANCE = 30
+-- car_boom 贴图的持续时长
 local BOOM_TIME = 2 / FPS
+-- Dog 撞击战斗框的总次数
 local HIT_COUNT = 30
+-- car_boom 和 explode 使用的最上方图层
 local EFFECT_LAYER = BATTLE_LAYERS["top"]
+-- 每次撞击时的镜头震动幅度
 local IMPACT_SHAKE = 4
-local SPIN_FRAME_COUNT = 27
-local SPIN_TIME = SPIN_FRAME_COUNT / FPS
-local PARABOLA_HEIGHT = 48
+-- Dog spin 动画的帧间隔
+local SPIN_FRAME_TIME = 1 / FPS
+-- Dog 飞回原位的总时长
+local RETURN_TIME = 30 / FPS
+-- Dog 沿抛物线飞回时的最高高度
+local PARABOLA_HEIGHT = 72
+-- Dog 后撤蓄力时的纵向缩放
 local SQUASHED_SCALE_Y = 1.8
 
 function Car:init()
@@ -31,8 +48,11 @@ function Car:init()
 end
 
 function Car:getCarFrontOffset()
+    -- 当前 car 动画的 sprite
     local sprite = self.dog:getActiveSprite()
+    -- car sprite 相对于 Dog 锚点的水平偏移
     local offset_x = sprite:getOffset()[1]
+    -- Dog 锚点相对于自身尺寸的水平位置
     local origin_x = self.dog:getOriginExact()
 
     return (origin_x - offset_x) * math.abs(self.dog.scale_x)
@@ -43,11 +63,13 @@ function Car:getCrashEdge()
 end
 
 function Car:spawnCarBoom(edge_x)
+    -- car_boom 贴图在战斗坐标中的垂直位置
     local _, boom_y = self.dog:getRelativePos(
         self.dog.width / 2,
         self.dog.height / 2,
         Game.battle
     )
+    -- 本次撞击生成的爆炸贴图
     local boom = self:spawnSprite(
         "enemies/dog/car_boom",
         edge_x,
@@ -78,18 +100,27 @@ function Car:finishHits(crash_edge)
         return
     end
 
+    -- 框架自带的爆炸效果
     local explosion = self.dog:explode(0, 0, true)
     if explosion then
         explosion.layer = EFFECT_LAYER
     end
-    self.dog:setAnimation("spin")
+    self.dog:setAnimation({
+        "spin/spin",
+        SPIN_FRAME_TIME,
+        true,
+    })
 
+    -- Dog 飞回原位时已经经过的时间
     local elapsed = 0
+    -- 抛物线运动的起点
     local start_x, start_y = self.dog:getPosition()
-    self.timer:during(SPIN_TIME, function()
+    self.timer:during(RETURN_TIME, function()
         elapsed = elapsed + DT
-        local progress = math.min(elapsed / SPIN_TIME, 1)
-        local eased = Utils.ease(0, 1, progress, "in-out-cubic")
+        -- 当前飞行动画的归一化进度
+        local progress = math.min(elapsed / RETURN_TIME, 1)
+        -- 水平移动使用的平滑进度
+        local eased = Utils.ease(0, 1, progress, "out-cubic")
 
         self.dog.x = MathUtils.lerp(start_x, self.original_x, eased)
         self.dog.y = self.original_y - (PARABOLA_HEIGHT * 4 * progress * (1 - progress))
@@ -104,7 +135,9 @@ function Car:hitArena(crash_edge, crash_x)
     end
 
     self.hit_count = self.hit_count + 1
+    -- 每次撞击随机决定镜头震动的横向方向
     local shake_x = love.math.random(0, 1) == 0 and -IMPACT_SHAKE or IMPACT_SHAKE
+    -- 每次撞击随机决定镜头震动的纵向方向
     local shake_y = love.math.random(0, 1) == 0 and -IMPACT_SHAKE or IMPACT_SHAKE
     Game.battle:shakeCamera(shake_x, shake_y)
     self:spawnCarBoom(crash_edge)
@@ -140,9 +173,13 @@ function Car:beginDrive()
 
     self.dog:setScaleOrigin(0.5, 1)
 
+    -- 战斗框右侧边缘
     local crash_edge = self:getCrashEdge()
+    -- car 左前端到 Dog 锚点的距离
     local front_offset = self:getCarFrontOffset()
+    -- Dog 冲撞时的目标位置
     local crash_x = crash_edge + front_offset
+    -- 第一次冲撞前的后撤位置
     local intro_x = math.max(self.dog.x + INTRO_DISTANCE, crash_x + RETREAT_DISTANCE)
 
     self.timer:tween(
