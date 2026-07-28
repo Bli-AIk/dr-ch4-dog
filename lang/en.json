@@ -57,6 +57,8 @@
     "act_dog_tell_joke_description": "Maybe it will\nbe useful?",
     "act_dog_pet_text": "* You reached for the [name:dog].[wait:5]\n* It moved away.",
     "act_dog_pet_party_text": "* Everyone went to pet the dog...[wait:5][func:dog_pet_miss][wait:1s]\n* But it easily dodged them!",
+    "battle_dog_pet_special": "* Everyone went to pet the dog...[wait:1s][func:dog_pet_special_shock]\n* Suddenly!",
+    "battle_dog_pet_special_3": "* The artifact and [name:sans]'s sock were separated!",
     "battle_dog_tell_joke_1": "* Everyone came up with a terrible pun...[wait:5]",
     "battle_dog_tell_joke_susie": "* Uh...[wait:5]\n* Why can't a dog be a singer?",
     "battle_dog_tell_joke_ralsei": "* Because it always PAWS halfway through![wait:5][react:susie_reaction]",

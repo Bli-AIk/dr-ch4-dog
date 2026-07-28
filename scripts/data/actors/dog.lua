@@ -47,7 +47,9 @@ function actor:init()
         ["speak"] = { "speak/", 1 / 6, true },
         ["bark"] = { "bark/", 1 / 6, false, next = "idle" },
         ["car"] = { "car/", 1 / 6, true },
+        ["shock"] = { "shock/1", 0.25, true },
         ["spin"] = { "spin/spin", 1 / 30, false, next = "idle" },
+        ["sleep"] = { "sleep/", 0.25, true },
     }
 
     -- Table of sprite offsets (indexed by sprite name)
@@ -55,6 +57,7 @@ function actor:init()
         -- The actor dimensions cover all animation frames, so no offset is needed.
         ["idle"] = { 0, 0 },
         ["car/"] = { -9, -23 },
+        ["sleep/"] = { -3, 2 },
     }
 end
 
