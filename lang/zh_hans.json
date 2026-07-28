@@ -43,6 +43,7 @@
     "item_ultimate_candy_noelleReaction": "有点让人失望...",
 
     "encounter_dog_start": "* 你感觉你要吃点骨头了！",
+    "battle_dog_dialogue": "汪",
 
     "enemy_dog_check": "攻击 1 防御 1\n* 吸收了一件神器与某件物品！[wait:5]\n* 它体内有什么阻止你碰到它。",
     "enemy_dog_turn_1": "* [name:dog]正盯着你。",
