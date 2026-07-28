@@ -11,6 +11,8 @@ local RETREAT_TIME = 3 / FPS
 local RETREAT_DISTANCE = 30
 local BOOM_TIME = 2 / FPS
 local HIT_COUNT = 30
+local EFFECT_LAYER = BATTLE_LAYERS["top"]
+local IMPACT_SHAKE = 4
 local SPIN_FRAME_COUNT = 27
 local SPIN_TIME = SPIN_FRAME_COUNT / FPS
 local PARABOLA_HEIGHT = 48
@@ -50,7 +52,7 @@ function Car:spawnCarBoom(edge_x)
         "enemies/dog/car_boom",
         edge_x,
         boom_y,
-        BATTLE_LAYERS["above_arena"]
+        EFFECT_LAYER
     )
 
     self.timer:after(BOOM_TIME, function()
@@ -76,7 +78,10 @@ function Car:finishHits(crash_edge)
         return
     end
 
-    self.dog:explode(0, 0, true)
+    local explosion = self.dog:explode(0, 0, true)
+    if explosion then
+        explosion.layer = EFFECT_LAYER
+    end
     self.dog:setAnimation("spin")
 
     local elapsed = 0
@@ -99,6 +104,9 @@ function Car:hitArena(crash_edge, crash_x)
     end
 
     self.hit_count = self.hit_count + 1
+    local shake_x = love.math.random(0, 1) == 0 and -IMPACT_SHAKE or IMPACT_SHAKE
+    local shake_y = love.math.random(0, 1) == 0 and -IMPACT_SHAKE or IMPACT_SHAKE
+    Game.battle:shakeCamera(shake_x, shake_y)
     self:spawnCarBoom(crash_edge)
 
     if self.hit_count >= HIT_COUNT then
