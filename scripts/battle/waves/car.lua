@@ -34,17 +34,34 @@ local RETURN_TIME = 30 / FPS
 local PARABOLA_HEIGHT = 72
 -- Dog 后撤蓄力时的纵向缩放
 local SQUASHED_SCALE_Y = 1.8
+-- 每个 pap bone 的长度
+local BONE_LENGTH = 40
+-- pap bone 从 boom 连续飞到窗口外的总时长
+local BONE_FLIGHT_TIME = 54 / FPS
+-- pap bone 经过 arena 底部时的抛物线进度
+local BONE_TARGET_PROGRESS = 0.65
+-- pap bone 顶点所在的抛物线进度
+local BONE_VERTEX_PROGRESS = 0.28
+-- pap bone 逆时针旋转的速度
+local BONE_ROTATION_SPEED = math.rad(360)
+-- pap bone 目标点距离 arena 左右边缘的间距
+local BONE_TARGET_MARGIN = 12
+-- pap bone 目标点的常规随机偏移范围
+local BONE_TARGET_JITTER = 18
+-- pap bone 目标点发生随机突变的概率
+local BONE_TARGET_MUTATION_CHANCE = 0.2
 
 function Car:init()
     super.init(self)
 
-    self.time = 10
+    self.time = 12
     self.dog = nil
     self.original_x = nil
     self.original_y = nil
     self.original_scale_x = nil
     self.original_scale_y = nil
     self.hit_count = 0
+    self.bone_target_index = 0
 end
 
 function Car:getCarFrontOffset()
@@ -62,6 +79,82 @@ function Car:getCrashEdge()
     return Game.battle.arena and Game.battle.arena:getRight() or 0
 end
 
+function Car:getBoneTargetX(arena)
+    self.bone_target_index = self.bone_target_index + 1
+
+    -- 目标点默认从 arena 左侧逐步滚动到右侧
+    -- 目标点允许出现的最小 x 坐标
+    local left = arena:getLeft() + BONE_TARGET_MARGIN
+    -- 目标点允许出现的最大 x 坐标
+    local right = arena:getRight() - BONE_TARGET_MARGIN
+    -- 当前目标点在左到右序列中的进度
+    local order_progress = (self.bone_target_index - 1) / math.max(HIT_COUNT - 1, 1)
+    -- 未发生突变时的有序目标位置
+    local target_x = MathUtils.lerp(left, right, order_progress)
+
+    if love.math.random() < BONE_TARGET_MUTATION_CHANCE then
+        -- 少量骨头直接跳到一个随机位置
+        target_x = left + love.math.random() * (right - left)
+    else
+        -- 大多数骨头只在有序位置附近产生小幅偏移
+        target_x = target_x + love.math.random(-BONE_TARGET_JITTER, BONE_TARGET_JITTER)
+    end
+
+    return MathUtils.clamp(target_x, left, right)
+end
+
+function Car:spawnBone(start_x, start_y)
+    local arena = Game.battle.arena
+    if not arena then
+        return
+    end
+
+    -- 本次骨头在 arena 底部的目标 x 坐标
+    local target_x = self:getBoneTargetX(arena)
+    -- 本次骨头在 arena 底部的目标 y 坐标
+    local target_y = arena:getBottom()
+    -- 抛物线经过目标点时的进度
+    local target_progress = BONE_TARGET_PROGRESS
+    -- 抛物线顶点所在的进度
+    local vertex_progress = BONE_VERTEX_PROGRESS
+    -- 让 x 在目标进度时恰好经过目标点，并在之后继续向窗口外移动
+    local exit_x = start_x + ((target_x - start_x) / target_progress)
+    -- 起点到 arena 底部目标点的垂直位移
+    local vertical_delta = target_y - start_y
+    -- 抛物线的二次项系数
+    local parabola_coefficient = vertical_delta
+        / (target_progress * target_progress - 2 * target_progress * vertex_progress)
+    -- 抛物线顶点的 y 坐标
+    local vertex_y = start_y - (parabola_coefficient * vertex_progress * vertex_progress)
+    -- 本次生成的 Pap 骨头弹幕
+    local bone = self:spawnBullet("pap_bone", start_x, start_y, BONE_LENGTH, "center")
+    bone.damage = 66
+
+    -- 骨头沿同一条抛物线飞行时已经经过的时间
+    local elapsed = 0
+    self.timer:during(BONE_FLIGHT_TIME, function()
+        if not bone.parent then
+            return false
+        end
+
+        elapsed = elapsed + DT
+        -- 轨迹的时间进度
+        local progress = math.min(elapsed / BONE_FLIGHT_TIME, 1)
+        -- 只控制沿抛物线运动的速度，不改变抛物线形状
+        local path_progress = Utils.ease(0, 1, progress, "out-cubic")
+        -- 当前点相对于抛物线顶点的进度
+        local vertex_offset = path_progress - vertex_progress
+
+        bone.x = MathUtils.lerp(start_x, exit_x, path_progress)
+        bone.y = vertex_y + (parabola_coefficient * vertex_offset * vertex_offset)
+        bone.rotation = bone.rotation - (BONE_ROTATION_SPEED * DT)
+    end, function()
+        if bone.parent then
+            bone:remove()
+        end
+    end)
+end
+
 function Car:spawnCarBoom(edge_x)
     -- car_boom 贴图在战斗坐标中的垂直位置
     local _, boom_y = self.dog:getRelativePos(
@@ -76,6 +169,7 @@ function Car:spawnCarBoom(edge_x)
         boom_y,
         EFFECT_LAYER
     )
+    self:spawnBone(edge_x, boom_y)
 
     self.timer:after(BOOM_TIME, function()
         if boom.parent then
