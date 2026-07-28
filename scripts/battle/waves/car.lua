@@ -13,7 +13,7 @@ local INTRO_TIME = 12 / FPS
 -- 第一次后撤的最小距离
 local INTRO_DISTANCE = 30
 -- Dog 向左冲撞的时长
-local CHARGE_TIME = 5 / FPS
+local CHARGE_TIME = 3 / FPS
 -- 每次撞击后向右后撤的时长
 local RETREAT_TIME = 3 / FPS
 -- 每次后撤的距离
@@ -34,10 +34,10 @@ local RETURN_TIME = 30 / FPS
 local PARABOLA_HEIGHT = 72
 -- Dog 后撤蓄力时的纵向缩放
 local SQUASHED_SCALE_Y = 1.8
--- 每个 pap bone 的长度
-local BONE_LENGTH = 40
+-- 每个 bone 贴图弹幕的资源路径
+local BONE_SPRITE = "bullets/bone"
 -- pap bone 从 boom 连续飞到窗口外的总时长
-local BONE_FLIGHT_TIME = 54 / FPS
+local BONE_FLIGHT_TIME = 54 / FPS * 1.5
 -- pap bone 经过 arena 底部时的抛物线进度
 local BONE_TARGET_PROGRESS = 0.65
 -- pap bone 顶点所在的抛物线进度
@@ -126,8 +126,8 @@ function Car:spawnBone(start_x, start_y)
         / (target_progress * target_progress - 2 * target_progress * vertex_progress)
     -- 抛物线顶点的 y 坐标
     local vertex_y = start_y - (parabola_coefficient * vertex_progress * vertex_progress)
-    -- 本次生成的 Pap 骨头弹幕
-    local bone = self:spawnBullet("pap_bone", start_x, start_y, BONE_LENGTH, "center")
+    -- 本次生成的 bone 贴图弹幕
+    local bone = self:spawnBullet(BONE_SPRITE, start_x, start_y)
     bone.damage = 66
 
     -- 骨头沿同一条抛物线飞行时已经经过的时间
