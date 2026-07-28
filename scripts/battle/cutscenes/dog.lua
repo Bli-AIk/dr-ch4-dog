@@ -1,3 +1,42 @@
+local PROP_FLOAT_RANGE = 4.5
+local PROP_FLOAT_HALF_PERIOD = 1
+local PROP_FLOAT_Y_OFFSET = -4
+local PROP_X_OFFSET = 20
+
+local function addFloatingProp(dog, texture, x, from_y, to_y)
+    local prop = dog:addChild(Sprite(texture, x, from_y))
+    prop:setOrigin(0.5, 0.5)
+    prop:setScale(1)
+    prop.layer = 1
+
+    local function continueFloating(current_y, target_y)
+        if not prop.parent then
+            return
+        end
+        Game.battle.timer:tween(
+            PROP_FLOAT_HALF_PERIOD,
+            prop,
+            {y = target_y},
+            "in-out-sine",
+            function()
+                continueFloating(target_y, current_y)
+            end
+        )
+    end
+
+    continueFloating(from_y, to_y)
+    return prop
+end
+
+local function addFloatingProps(dog)
+    local center_y = dog.height / 2 + PROP_FLOAT_Y_OFFSET
+    local top_y = center_y - PROP_FLOAT_RANGE
+    local bottom_y = center_y + PROP_FLOAT_RANGE
+
+    addFloatingProp(dog, "artifact", dog.width / 2 - PROP_X_OFFSET, top_y, bottom_y)
+    addFloatingProp(dog, "sock", dog.width / 2 + PROP_X_OFFSET, bottom_y, top_y)
+end
+
 return {
     ---@param cutscene BattleCutscene
     tell_joke = function(cutscene)
@@ -75,6 +114,7 @@ return {
         dog.sprite:stopShake()
         dog.overlay_sprite:stopShake()
         cutscene:setAnimation(dog, "sleep")
+        addFloatingProps(dog)
 
         local fade_in_done = cutscene:fadeIn(0.75, {
             color = COLORS.white,
