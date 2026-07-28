@@ -34,5 +34,9 @@
     "dog": {
         "en": "Annoying Dog",
         "zh_hans": "神烦狗"
+    },
+    "sans": {
+        "en": "Sans",
+        "zh_hans": "衫斯"
     }
 }

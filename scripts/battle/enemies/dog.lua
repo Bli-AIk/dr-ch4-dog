@@ -6,6 +6,9 @@ function Dog:init()
     self:applyLocalization()
     self:setActor("dog")
 
+    self.joke_completed = false
+    self.special_pet_completed = false
+
     -- Enemy health
     self.max_health = 450
     self.health = 450
@@ -194,6 +197,12 @@ function Dog:onAct(battler, name)
     elseif name == self.act_pet then
         local action = Game.battle:getCurrentAction()
         if action and action.party and #action.party > 0 then
+            if self.joke_completed and not self.special_pet_completed then
+                self.special_pet_completed = true
+                Game.battle:startActCutscene("dog", "pet_party_special")
+                return
+            end
+
             Game.battle:startActCutscene(function(cutscene)
                 cutscene:text(Game:loc("act_dog_pet_party_text"), {
                     functions = {
@@ -210,6 +219,7 @@ function Dog:onAct(battler, name)
     elseif name == self.act_tell_joke then
         local cutscene = Game.battle:startActCutscene("dog", "tell_joke")
         cutscene:after(function()
+            self.joke_completed = true
             self.dialogue_override = "[instant][sound:voice/sans]"
                 .. Game:loc("battle_dog_dialogue")
         end)
