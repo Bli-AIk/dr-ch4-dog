@@ -228,6 +228,8 @@ function Car:finishHits(crash_edge)
         self.dog.y = self.original_y - (PARABOLA_HEIGHT * 4 * progress * (1 - progress))
     end, function()
         self:restoreDog()
+        self.dog:setAnimation("bark")
+        Assets.playSound("snd_pombark")
     end)
 end
 

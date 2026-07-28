@@ -45,6 +45,7 @@ function actor:init()
         -- (even though there's only 1 idle frame)
         ["idle"] = { "idle/idle", 0.25, true },
         ["speak"] = { "speak/", 1 / 6, true },
+        ["bark"] = { "bark/", 1 / 6, false, next = "idle" },
         ["car"] = { "car/", 1 / 6, true },
         ["spin"] = { "spin/spin", 1 / 30, false, next = "idle" },
     }
