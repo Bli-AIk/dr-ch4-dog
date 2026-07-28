@@ -1,0 +1,31 @@
+@font-face {
+  font-family: 'Fusion Pixel 10px';
+  src: url('./fonts/fusion-pixel-10px-proportional-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  unicode-range:
+    U+0000-00FF,
+    U+0100-024F,
+    U+2000-206F,
+    U+20A0-20CF,
+    U+2100-214F,
+    U+2190-21FF;
+}
+
+@font-face {
+  font-family: 'Fusion Pixel 10px';
+  src: url('./fonts/fusion-pixel-10px-proportional-zh-hans.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  unicode-range:
+    U+2E80-2EFF,
+    U+3000-303F,
+    U+31C0-31EF,
+    U+3400-4DBF,
+    U+4E00-9FFF,
+    U+F900-FAFF,
+    U+FE30-FE4F,
+    U+FF00-FFEF;
+}
