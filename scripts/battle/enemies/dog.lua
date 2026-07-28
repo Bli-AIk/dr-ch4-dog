@@ -199,7 +199,10 @@ function Dog:onAct(battler, name)
         if action and action.party and #action.party > 0 then
             if self.joke_completed and not self.special_pet_completed then
                 self.special_pet_completed = true
-                Game.battle:startActCutscene("dog", "pet_party_special")
+                local cutscene = Game.battle:startActCutscene("dog", "pet_party_special")
+                cutscene:after(function()
+                    self:spare()
+                end)
                 return
             end
 
