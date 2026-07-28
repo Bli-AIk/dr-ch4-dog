@@ -31,30 +31,36 @@ local SPIN_FRAME_TIME = 1 / FPS
 -- Dog 飞回原位的总时长
 local RETURN_TIME = 30 / FPS
 -- Dog 沿抛物线飞回时的最高高度
-local PARABOLA_HEIGHT = 72
+local PARABOLA_HEIGHT = 72 * 2
 -- Dog 后撤蓄力时的纵向缩放
 local SQUASHED_SCALE_Y = 1.8
 -- 每个 bone 贴图弹幕的资源路径
 local BONE_SPRITE = "bullets/bone"
--- pap bone 从 boom 连续飞到窗口外的总时长
+-- bone 从 boom 连续飞到窗口外的总时长
 local BONE_FLIGHT_TIME = 54 / FPS * 1.5
--- pap bone 经过 arena 底部时的抛物线进度
+-- bone 经过 arena 底部时的抛物线进度
 local BONE_TARGET_PROGRESS = 0.65
--- pap bone 顶点所在的抛物线进度
+-- bone 顶点所在的抛物线进度
 local BONE_VERTEX_PROGRESS = 0.28
--- pap bone 逆时针旋转的速度
+-- bone 逆时针旋转的速度
 local BONE_ROTATION_SPEED = math.rad(360)
--- pap bone 目标点距离 arena 左右边缘的间距
+-- bone 目标点距离 arena 右边缘的间距
 local BONE_TARGET_MARGIN = 12
--- pap bone 目标点的常规随机偏移范围
-local BONE_TARGET_JITTER = 18
--- pap bone 目标点发生随机突变的概率
-local BONE_TARGET_MUTATION_CHANCE = 0.2
+-- bone 最左目标点距离 arena 左边缘的间距
+local BONE_TARGET_LEFT_MARGIN = -48
+-- bone 目标点的常规随机偏移范围
+local BONE_TARGET_JITTER = 40
+-- bone 目标点发生随机突变的概率
+local BONE_TARGET_MUTATION_CHANCE = 0.35
+-- bone 目标点从左到右循环的次数
+local BONE_TARGET_CYCLE_COUNT = 3
+-- 每个左到右循环包含的撞击次数
+local BONE_TARGETS_PER_CYCLE = HIT_COUNT / BONE_TARGET_CYCLE_COUNT
 
 function Car:init()
     super.init(self)
 
-    self.time = 12
+    self.time = 9
     self.dog = nil
     self.original_x = nil
     self.original_y = nil
@@ -84,11 +90,13 @@ function Car:getBoneTargetX(arena)
 
     -- 目标点默认从 arena 左侧逐步滚动到右侧
     -- 目标点允许出现的最小 x 坐标
-    local left = arena:getLeft() + BONE_TARGET_MARGIN
+    local left = arena:getLeft() + BONE_TARGET_LEFT_MARGIN
     -- 目标点允许出现的最大 x 坐标
     local right = arena:getRight() - BONE_TARGET_MARGIN
-    -- 当前目标点在左到右序列中的进度
-    local order_progress = (self.bone_target_index - 1) / math.max(HIT_COUNT - 1, 1)
+    -- 当前目标点所在循环中的序号
+    local cycle_index = (self.bone_target_index - 1) % BONE_TARGETS_PER_CYCLE
+    -- 当前目标点在本次左到右循环中的进度
+    local order_progress = cycle_index / math.max(BONE_TARGETS_PER_CYCLE - 1, 1)
     -- 未发生突变时的有序目标位置
     local target_x = MathUtils.lerp(left, right, order_progress)
 
