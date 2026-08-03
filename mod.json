@@ -2,7 +2,7 @@
     // The ID of your project. Should be unique!!
     "id": "dr-ch4-dog",
     // Displays on the main menu.
-    "name": "Vs. Chapter4 Annoying Dog!!!",
+    "name": "dr-ch4-dog",
     // Displays underneath the name. Optional.
     "subtitle": "dog ym ho",
 
