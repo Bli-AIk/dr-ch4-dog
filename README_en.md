@@ -1,15 +1,15 @@
-# Thrash Machine
+# dr-ch4-dog
 
 [![license](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)](LICENSE-APACHE)
 
-**Thrash Machine** is a standard Lua Kristal v0.10 template. It keeps a playable starter map, Dummy battle, and object event while wiring together Simplified Chinese localization, development-only object editing and terminal debugging, and project-local Emacs and Helix configuration.
+**dr-ch4-dog** is a standard Lua Kristal v0.10 template. It keeps a playable starter map, Dummy battle, and object event while wiring together Simplified Chinese localization, development-only object editing and terminal debugging, and project-local Emacs and Helix configuration.
 
 [简体中文](README.md)
 
 ## Quick Start
 
-    git clone --recurse-submodules https://github.com/Bli-AIk/thrash-machine.git
-    cd thrash-machine
+    git clone --recurse-submodules https://github.com/Bli-AIk/dr-ch4-dog.git
+    cd dr-ch4-dog
     git submodule update --init --recursive
     make test
     KRISTAL_ROOT=/path/to/Kristal just run
@@ -20,7 +20,7 @@ Battle startup debugging is provided by the `kristal-debug-tools` library submod
     just run --wave 2 --tp 50 --mercy 100
     just run --wave-force 3
 
-The template uses thrash-machine as its Mod ID. Change the ID, display name, version, and README badge URLs after creating a repository from the GitHub template.
+The template uses dr-ch4-dog as its Mod ID. Change the ID, display name, version, and README badge URLs after creating a repository from the GitHub template.
 
 ## Tooling
 

@@ -1,11 +1,11 @@
-# Thrash Machine
+# dr-ch4-dog
 
-[![license](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)](LICENSE-APACHE) <img src="https://img.shields.io/github/repo-size/Bli-AIk/thrash-machine.svg"/> <img src="https://img.shields.io/github/last-commit/Bli-AIk/thrash-machine.svg"/>
+[![license](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)](LICENSE-APACHE) <img src="https://img.shields.io/github/repo-size/Bli-AIk/dr-ch4-dog.svg"/> <img src="https://img.shields.io/github/last-commit/Bli-AIk/dr-ch4-dog.svg"/>
 <img src="https://img.shields.io/badge/Lua-2C2D72?style=for-the-badge"/> <img src="https://img.shields.io/badge/Kristal-3B3B3B?style=for-the-badge"/>
 
 > 当前状态：可作为新 Kristal Mod 的开发模板使用。
 
-**Thrash Machine** 是一个标准 Lua Kristal v0.10 模板。它保留可运行的 starter map、Dummy 战斗和对象事件，并将简体中文语言库、开发期 object-editor、terminal-cli、Emacs 和 Helix 配置组织为可更新的子模块。
+**dr-ch4-dog** 是一个标准 Lua Kristal v0.10 模板。它保留可运行的 starter map、Dummy 战斗和对象事件，并将简体中文语言库、开发期 object-editor、terminal-cli、Emacs 和 Helix 配置组织为可更新的子模块。
 
 | 简体中文 | English |
 | --- | --- |
@@ -25,11 +25,11 @@
 
 ### 克隆
 
-    git clone --recurse-submodules https://github.com/Bli-AIk/thrash-machine.git
-    cd thrash-machine
+    git clone --recurse-submodules https://github.com/Bli-AIk/dr-ch4-dog.git
+    cd dr-ch4-dog
     git submodule update --init --recursive
 
-模板在 mod.json 中使用 ID thrash-machine。从 GitHub 的 Use this template 创建新仓库后，应先修改该 ID、显示名称、版本和 README 徽章地址。
+模板在 mod.json 中使用 ID dr-ch4-dog。从 GitHub 的 Use this template 创建新仓库后，应先修改该 ID、显示名称、版本和 README 徽章地址。
 
 ### 依赖
 
