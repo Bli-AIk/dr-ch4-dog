@@ -207,7 +207,7 @@ function Dog:onAct(battler, name)
             end
 
             Game.battle:startActCutscene(function(cutscene)
-                cutscene:text(Game:loc("act_dog_pet_party_text"), {
+                cutscene:text("{act_dog_pet_party_text}", {
                     functions = {
                         dog_pet_miss = function()
                             self:statusMessage("msg", "miss_gold")
