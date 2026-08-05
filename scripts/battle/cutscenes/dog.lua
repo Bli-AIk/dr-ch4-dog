@@ -40,22 +40,22 @@ end
 return {
     ---@param cutscene BattleCutscene
     tell_joke = function(cutscene)
-        cutscene:text(Game:loc("battle_dog_tell_joke_1"))
+        cutscene:text("{battle_dog_tell_joke_1}")
 
         cutscene:text(
-            Game:loc("battle_dog_tell_joke_susie"),
+            "{battle_dog_tell_joke_susie}",
             "nervous",
             "susie"
         )
 
         cutscene:text(
-            Game:loc("battle_dog_tell_joke_ralsei"),
+            "{battle_dog_tell_joke_ralsei}",
             "blush_pleased_open",
             "ralsei",
             {
                 reactions = {
                     susie_reaction = {
-                        Game:loc("battle_dog_tell_joke_susie_reaction"),
+                        "{battle_dog_tell_joke_susie_reaction}",
                         "right",
                         "bottom",
                         "nervous",
@@ -68,11 +68,11 @@ return {
         -- These lines are narration, so they intentionally have no portrait.
         cutscene:setSpeaker(nil)
         cutscene:text(
-            Game:loc("battle_dog_tell_joke_dog")
+            "{battle_dog_tell_joke_dog}"
                 .. "[wait:1s][sound:mus_rimshot]\n"
-                .. Game:loc("battle_dog_tell_joke_inside")
+                .. "{battle_dog_tell_joke_inside}"
         )
-        cutscene:text(Game:loc("battle_dog_tell_joke_touch"))
+        cutscene:text("{battle_dog_tell_joke_touch}")
     end,
 
     pet_party_special = function(cutscene)
@@ -80,7 +80,7 @@ return {
         local shock_started = false
 
         cutscene:setSpeaker(nil)
-        cutscene:text(Game:loc("battle_dog_pet_special"), {
+        cutscene:text("{battle_dog_pet_special}", {
             skip = false,
             advance = false,
             wait = false,
@@ -121,6 +121,6 @@ return {
             music = false
         })
         cutscene:wait(fade_in_done)
-        cutscene:text(Game:loc("battle_dog_pet_special_3"))
+        cutscene:text("{battle_dog_pet_special_3}")
     end
 }
