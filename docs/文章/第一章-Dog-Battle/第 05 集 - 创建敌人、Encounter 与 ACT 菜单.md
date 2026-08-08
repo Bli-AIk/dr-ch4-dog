@@ -195,20 +195,7 @@ return PartyBattler
 
 ## ACT 菜单：抚摸与讲笑话
 
-第 04 集试过 dummy 的 ACT（微笑、讲故事）——选项哪来的？先说关键的：ACT 名字和描述这些文本，都来自敌人的 `applyLocalization`——就是 init 第一行调用的那个（第 04 集 dummy.lua 里也见过它）。它把语言文件里的文本取出来，挂到 `self` 上：
-
-```lua
--- 在 applyLocalization 里：
-self.act_pet = Game:loc("act_dog_pet")
-self.act_pet_description = Game:loc("act_dog_pet_description")
-self.act_pet_party = self.act_pet  -- 队伍版抚摸沿用同一个名字
-self.act_tell_joke = Game:loc("act_dog_tell_joke")
-self.act_tell_joke_description = Game:loc("act_dog_tell_joke_description")
-```
-
-（这就是前面说的"存进代码变量"——`Game:loc` 的用武之地。至于 `self` 为什么能凭空挂一个压根没声明过的属性——Lua 的魔法（草）：EX01 说过，表什么都能装，`self` 就是个表，赋值即创建，不用提前声明。）
-
-取出来的文本，就是语言文件里的这些键值对——`lang/zh_hans.json`（`lang/en.json` 里是英文版，加 key 的流程和第 04 集一样）：
+第 04 集试过 dummy 的 ACT（微笑、讲故事）——选项哪来的？先看 ACT 的名字和描述这些文本存在哪——语言文件。`lang/zh_hans.json`（`lang/en.json` 里是英文版，加 key 的流程和第 04 集一样）：
 
 ```json
 "act_dog_pet": "抚摸",
@@ -219,16 +206,18 @@ self.act_tell_joke_description = Game:loc("act_dog_tell_joke_description")
 
 "前提是能碰到"——摸都摸不到，还谈什么抚摸。这文案，自己品。
 
-字段有了，再看怎么把它们注册成 ACT——还是 `registerAct`，就在 init 里加几行：
+然后注册成 ACT——`registerAct`，直接在 init 里加几行，名字和描述的位置**直接写 {key}**：
 
 ```lua
 -- 单人 ACT：谁都能用
-self:registerAct(self.act_pet, self.act_pet_description)
+self:registerAct("{act_dog_pet}", "{act_dog_pet_description}")
 -- 队伍 ACT：苏西和利艾尔斯一起参与的摸狗 act
-self:registerAct(self.act_pet_party, self.act_pet_description, {"susie", "ralsei"})
+self:registerAct("{act_dog_pet}", "{act_dog_pet_description}", {"susie", "ralsei"})
 -- 队伍 ACT：讲笑话，需要 100 TP
-self:registerAct(self.act_tell_joke, self.act_tell_joke_description, {"susie", "ralsei"}, 100)
+self:registerAct("{act_dog_tell_joke}", "{act_dog_tell_joke_description}", {"susie", "ralsei"}, 100)
 ```
+
+咦，这里也能写 {key}？——能。i18n 库在 `registerAct` 上挂了钩子（还记得初见钩子那节的 hook 吗？），注册时就把 `{key}` 解析成当前语言的文本了。所以不用先取出来存变量——**写的时候就直接写 {key}**，最省事。（init 第一行那个 `applyLocalization()` 是项目"运行中切换语言"的进阶做法，新手阶段先不用管它。）
 
 `registerAct` 的参数：名字、描述、能用的角色、所需 TP。
 
