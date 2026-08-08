@@ -124,7 +124,7 @@ end
 - 中文："* 你感觉你要吃点骨头了！"
 - 英文："* You feel like you're going to have a bad bone."
 
-音乐 `dog_buster` 是项目自带的曲子（`assets/music/dog_buster.ogg`）——名字懂的都懂。它是别人做的曲子，我把它收进了项目，原曲链接记在项目 README 里——本集开头才说"出处要标"，这就是了。
+音乐 `dog_buster` 是项目自带的曲子（`assets/music/dog_buster.ogg`）——它是别人做的曲子，我把它收进了项目，原曲视频：https://www.youtube.com/watch?v=NffMzWIkIn4，出处也记在项目 README 里。
 
 最后是第 04 集留的悬念兑现：把 mod.json 的 `"encounter": "dummy"` 改成 `"encounter": "dog"`。启动——神烦狗站在战斗框右侧，看着你。
 
