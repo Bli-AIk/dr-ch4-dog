@@ -1,22 +1,54 @@
 # 第 05 集：创建敌人、Encounter 与 ACT 菜单
 
-欢迎！这是《从零做一个 Deltarune 同人游戏》系列的第 5 集，也是**第一章的第二集**。
+欢迎回来——这是《从零做一个 Deltarune 同人游戏》系列的第 5 集，也是**第一章的第二集**。
 
-第 04 集结尾的预告还记得吧？"下一集，把训练人偶换成真正的神烦狗"。对照第 03 集的目标清单，本集要给两行打勾：**敌人能出现在战斗里**和**ACT 菜单**。做完这两件事，"对手"和"互动"就都齐了——弹幕要等下一集才开始。
+第 04 集结尾的预告还记得吧？"下一集，把训练人偶换成真正的神烦狗"。对照第 03 集的目标清单，本集要给两行打勾：**敌人能出现在战斗里**和**ACT 菜单**。做完这两件事，"对手"和"互动"就都齐了——弹幕不着急，等下一集开始做。
 
 ## 素材：全部来自拆包
 
 做敌人之前先解决素材。神烦狗（Annoying Dog）是 Deltarune 原作里的梗角色——就是那只时不时乱入的白狗。它的素材怎么来的？**全部来自拆包原作**，包括后面会用到的转圈（spin）动画。
 
-拆包素材能用，但怎么用才合规，番外 EX02 把原则讲透了——出处要标、边界要守。这篇解决"素材从哪来"，那篇解决"拿来的东西怎么用"。
+拆包素材能用，但怎么用才合规，番外 EX02 已经把原则讲透了——出处要标、版权边界要守。详情请移步——去看看常见的素材源，以及对待这些素材应有的态度。
 
-素材放哪？`assets/sprites/enemies/dog/`（第 02 集目录树里的素材目录，狗自己的文件夹）。idle、bark、speak……动画帧都在里面。
+素材放哪？`assets/sprites/enemies/dog/`（第 02 集目录树里的素材目录，创一个狗自己的文件夹）。idle、bark、speak……动画帧都在里面。
 
 ## 从 dummy 到 dog：创建敌人
 
-先坦白一个事实：本项目的狗敌人，第一版其实就是**复制 dummy.lua 改的**——EX01 结尾那句"第一遍抄"，你们还没开始抄，我自己先抄了。更有意思的是，git 历史里那第一版连本地化的 key 都没换，还在引用 dummy 的文本。抄完记得检查，别学我（笑）。
+先坦白一个事实：本项目的狗敌人，第一版其实就是**复制 dummy.lua 改的**——EX01 结尾那句"第一遍抄"，你们还没开始抄——好吧，我自己先抄了（笑）。更有意思的是，我往回看我 git 历史里第一版，连本地化的 key 都没换，还在引用 dummy 的文本。抄完记得检查，别学我（笑）。
 
-黑历史就不展示了，直接看"正确抄完"的样子。`scripts/battle/enemies/dog.lua`：
+不过动手抄之前，先认识一个东西——`setActor("dog")` 里那个 `"dog"` 形象是谁？答案在 `data/actors/dog.lua`。这个文件定义狗"长什么样、动画怎么播"（第 04 集目录清单里 actor 的职责）：
+
+```lua
+local actor, super = Class(Actor, "dog")
+
+function actor:init()
+    super.init(self)
+
+    -- Display name (optional)
+    self.name = "Annoying Dog"
+
+    -- Match the largest frame in the dog animations (idle_2 is 22x19).
+    self.width = 22
+    self.height = 19
+
+    -- Path to this actor's sprites (defaults to "")
+    self.path = "enemies/dog"
+    -- This actor's default sprite or animation, relative to the path (defaults to "")
+    self.default = "idle"
+
+    -- Table of sprite animations
+    self.animations = {
+        ["idle"]  = { "idle/idle", 0.25, true },                      -- 待机
+        ["speak"] = { "speak/", 1 / 6, true },                        -- 说话
+        ["bark"]  = { "bark/", 1 / 6, false, next = "idle" },         -- 叫一声，播完回待机
+        ["spin"]  = { "spin/spin", 1 / 30, false, next = "idle" },    -- 转圈，播完回待机
+    }
+end
+```
+
+逐行看（英文注释我翻译一下）：`Class(Actor, "dog")`——**第二个参数就是它的 ID**；`name` 是显示名；`width`/`height` 是尺寸（22×19，动画最大帧的尺寸）；`path` 是贴图目录（`assets/sprites/` 下的 `enemies/dog`，素材节那个文件夹）；`default` 是默认动画。最下面的 `animations` 是动画目录——每个动画一行 `{ 帧序列, 每帧秒数, 是否循环 }`，还能写 `next`：播完自动切回哪个动画。素材节说"动画帧都在里面"，配上这张表，帧才真正被组织起来。（它还有几个动画——car、shock、sleep——留给后面集数，现在先认识这四个。）
+
+现在再回来看敌人。`scripts/battle/enemies/dog.lua`：
 
 ```lua
 local Dog, super = Class(EnemyBattler)
@@ -36,13 +68,13 @@ end
 
 眼熟吗？第 04 集我们逐行看过 dummy.lua 的同款代码——`Class(EnemyBattler)` 继承、`init` 里设数值、`self` 挂属性。改动其实只有两处：类名 `Dummy` 变 `Dog`，`setActor("dummy")` 变 `setActor("dog")`。数值还是 450 血、4 攻——先抄着，后面再调。
 
-这里顺手把三个容易混的概念理清：
+`setActor("dog")` 让敌人和形象对接——actor 文件里 `Class(Actor, "dog")` 注册的 ID 是 `"dog"`，这里按 ID 找的就是它。第 04 集说的"ID 是胶水"，又一次生效。（顺便一提：敌人的 ID 来自文件名，actor 的 ID 写在 `Class` 的第二个参数——两个机制，殊途同归。）
+
+这里顺手把三个容易混的概念理清（三份文件都叫 dog，但职责不同）：
 
 - **Enemy（敌人）**：`enemies/dog.lua`——数值和行为（血量、攻击、ACT 选项）；
 - **Encounter（遭遇战）**：`encounters/dog.lua`——战斗的"容器"（敌人是谁、开场说什么、回合怎么流转）；
-- **Actor（形象）**：`data/actors/dog.lua`——长什么样。狗的 actor 定义：22×19 像素、贴图路径 `enemies/dog`、默认动画 idle。
-
-`setActor("dog")` 让敌人和形象按 ID 对接——第 04 集说的"ID 是胶水"，又一次生效。
+- **Actor（形象）**：`data/actors/dog.lua`——长什么样、动画怎么播（上面那段代码就是它）。
 
 （本集做完后，狗的"回合"还是借模板的弹幕（basic 那些）——你先别急着嫌"这弹幕不像狗"，第 06-08 集，三波弹幕挨个换成我们自己的。）
 
