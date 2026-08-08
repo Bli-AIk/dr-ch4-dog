@@ -204,9 +204,9 @@ return PartyBattler
 "act_dog_tell_joke_description": "或许有\n用？"
 ```
 
-"前提是能碰到"——摸都摸不到，还谈什么抚摸。这文案，自己品。
+"前提是能碰到"，”或许有用“，是选择ACT时，右侧显示的灰色文本。
 
-然后注册成 ACT——`registerAct`，直接在 init 里加几行，名字和描述的位置**直接写 {key}**：
+然后注册成 ACT——`registerAct` 是敌人的方法，直接加在**敌人文件**（`scripts/battle/enemies/dog.lua`，就是本集前面看过的那段）的 init 里，名字和描述的位置**直接写 {key}**：
 
 ```lua
 -- 单人 ACT：谁都能用
