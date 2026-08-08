@@ -1,6 +1,6 @@
-# 第 03 集：如何使用 Kristal Wiki、API Reference 与示例项目
+# 第 02 集：如何使用 Kristal Wiki、API Reference 与示例项目
 
-> [[课程总览|返回课程总览]] · [[05-番外/EX00 - Linux 与 Android Termux 开发环境（番外）|上一集]] · [[00-序章/第 04 集 - 如何拆解一个 Deltarune 同人游戏（Dog Battle 项目规划）|下一集]]
+> [[课程总览|返回课程总览]] · [[05-番外/EX00 - Linux 与 Android Termux 开发环境（番外）|上一集]] · [[00-序章/第 03 集 - 如何拆解一个 Deltarune 同人游戏（Dog Battle 项目规划）|下一集]]
 
 ## 开场
 

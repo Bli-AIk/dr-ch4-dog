@@ -1,6 +1,6 @@
 # EX00：Linux / Android Termux 开发环境（番外）
 
-> [[课程总览|返回课程总览]] · [[00-序章/第 01 集 - Windows 开发环境搭建（VSCode）|上一集]] · [[00-序章/第 03 集 - 如何使用 Kristal Wiki、API Reference 与示例项目|下一集]]
+> [[课程总览|返回课程总览]] · [[00-序章/第 01 集 - Windows 开发环境搭建（VSCode）|上一集]] · [[00-序章/第 02 集 - 如何使用 Kristal Wiki、API Reference 与示例项目|下一集]]
 
 ## 开场
 
