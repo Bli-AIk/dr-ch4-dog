@@ -39,6 +39,12 @@ The template uses dr-ch4-dog as its Mod ID. Change the ID, display name, version
 
 The standalone builder stages stock Kristal v0.10.0 and changes only target-Mod startup, window identity, and release/debug flags. Production packages keep localization, disable the object editor, exclude terminal-cli, and omit development files.
 
+## Assets & Credits
+
+| Asset | Source |
+| --- | --- |
+| Battle music dog_buster (assets/music/dog_buster.ogg) | Original video: https://www.youtube.com/watch?v=NffMzWIkIn4 |
+
 ## License
 
 Repository-authored Lua source and documentation are dual-licensed under Apache-2.0 (LICENSE-APACHE) or MIT (LICENSE-MIT). See third-party notices (THIRD_PARTY.md) for Kristal and submodule license boundaries.
