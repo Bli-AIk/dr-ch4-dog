@@ -92,12 +92,35 @@ end
 
 第三种资料：示例项目。你不是已经有一个了吗？——thrash-machine（第 01 集建的）。你甚至已经和它的训练人偶打过一架了（往右走进 room2 那个），现在来看看它背后长什么样。
 
-打开它的 `scripts/` 目录，你会发现里面的组织方式和 Wiki 讲的完全对应：
+打开它的目录，你会发现里面的组织方式和 Wiki 讲的完全对应——一颗标准的 Kristal 项目目录树长这样：
 
-- `scripts/battle/`：战斗相关，下面再分 `enemies`（敌人）、`encounters`（遭遇战）、`waves`（弹幕回合）、`cutscenes`（战斗演出）、`bullets`（子弹）……
-- `scripts/data/`：数据类脚本，`actors`（角色）、`items`（物品）……
-- `scripts/world/`：世界相关，`maps`（地图）、`cutscenes`（过场）……
-- `assets/`：素材；`libraries/`：库。
+```text
+thrash-machine/
+├── mod.json            # 项目配置（ID、章节、队伍、物品……）
+├── mod.lua             # 项目入口
+├── assets/             # 素材
+│   ├── sprites/        #   图片（精灵）
+│   ├── sounds/         #   音效
+│   ├── music/          #   音乐
+│   └── fonts/          #   字体
+├── scripts/
+│   ├── battle/         # 战斗
+│   │   ├── enemies/    #   敌人
+│   │   ├── encounters/ #   遭遇战
+│   │   ├── waves/      #   弹幕回合
+│   │   ├── cutscenes/  #   战斗演出
+│   │   └── bullets/    #   弹幕
+│   ├── data/           # 数据
+│   │   └── actors/     #   角色（物品、法术等也在这层）
+│   ├── objects/        # 自定义对象
+│   └── world/          # 世界
+│       ├── maps/       #   地图
+│       └── cutscenes/  #   过场
+├── lang/               # 本地化文本（kristal-i18n）
+└── libraries/          # 库
+```
+
+（这个模板里的 `lang/` 是 kristal-i18n 加的，原版引擎创建的项目没有；`data/` 下按 wiki 的约定还可以放 `items`、`party`、`spells` 等目录，模板里暂时没有而已。）
 
 随便打开一个文件看真实写法——比如 `scripts/battle/enemies/dummy.lua`（训练人偶）：它定义了一个 `Class(EnemyBattler)` 的类，`init` 里设置血量、攻击力、ACT 选项，`onAct` 里写各个 ACT 的效果。你在 Wiki 上学到的"敌人怎么写"，在这里能看到完整的真实形态。
 
