@@ -206,15 +206,27 @@ return PartyBattler
 
 "前提是能碰到"，”或许有用“，是选择ACT时，右侧显示的灰色文本。
 
-然后注册成 ACT——`registerAct` 是敌人的方法，直接加在**敌人文件**（`scripts/battle/enemies/dog.lua`，就是本集前面看过的那段）的 init 里，名字和描述的位置**直接写 {key}**：
+然后注册成 ACT——`registerAct` 是敌人的方法，加在敌人文件（`scripts/battle/enemies/dog.lua`）的 init 里，名字和描述的位置**直接写 {key}**。完整的样子是这样（就是前面那段 init，末尾加了三条注册）：
 
 ```lua
--- 单人 ACT：谁都能用
-self:registerAct("{act_dog_pet}", "{act_dog_pet_description}")
--- 队伍 ACT：苏西和利艾尔斯一起参与的摸狗 act
-self:registerAct("{act_dog_pet}", "{act_dog_pet_description}", {"susie", "ralsei"})
--- 队伍 ACT：讲笑话，需要 100 TP
-self:registerAct("{act_dog_tell_joke}", "{act_dog_tell_joke_description}", {"susie", "ralsei"}, 100)
+function Dog:init()
+    super.init(self)
+    self:applyLocalization()
+    self:setActor("dog")
+
+    self.max_health = 450
+    self.health = 450
+    self.attack = 4
+    self.defense = 0
+    self.money = 100
+
+    -- 单人 ACT：谁都能用
+    self:registerAct("{act_dog_pet}", "{act_dog_pet_description}")
+    -- 队伍 ACT：苏西和利艾尔斯一起参与的摸狗 act
+    self:registerAct("{act_dog_pet}", "{act_dog_pet_description}", {"susie", "ralsei"})
+    -- 队伍 ACT：讲笑话，需要 100 TP
+    self:registerAct("{act_dog_tell_joke}", "{act_dog_tell_joke_description}", {"susie", "ralsei"}, 100)
+end
 ```
 
 咦，这里也能写 {key}？——能。i18n 库在 `registerAct` 上挂了钩子（还记得初见钩子那节的 hook 吗？），注册时就把 `{key}` 解析成当前语言的文本了。所以不用先取出来存变量——**写的时候就直接写 {key}**，最省事。（init 第一行那个 `applyLocalization()` 是项目"运行中切换语言"的进阶做法，新手阶段先不用管它。）
