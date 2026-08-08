@@ -144,7 +144,20 @@ end
 
 可以想象成你进不了后厨（不改引擎），但你能决定做什么饭。你在打饭窗口递了张条子（hook）——师傅每次打饭，都会先看一眼条子——然后按照你的安排走。
 
-Kristal 里写 hook 的地方是 `scripts/hooks/` 目录——引擎自动加载，第 04 集"位置才重要"又生效了。看 `scripts/hooks/PartyBattler.lua`：
+Kristal 里写 hook 的地方是 `scripts/hooks/` 目录——引擎自动加载，第 04 集"位置才重要"又生效了。不过先别急着看 hook——**先看引擎原本的 `setAnimation` 长什么样**，真实源码就这几行（`src/engine/game/battle/battler.lua`）：
+
+```lua
+function Battler:setAnimation(animation, callback)
+    if not self.sprite then
+        self:createSprite()
+    end
+    return self.sprite:setAnimation(animation, callback)
+end
+```
+
+翻译一下：先确保角色身上的形象精灵存在，然后把动画描述交给精灵播放。再往里还有一层（`ActorSprite:setAnimation`，查 actor 动画表、按帧播放）——那段代码挺长，就不贴了，知道它"查表、播放"就够用；本集前面狗 actor 里那种 `animations` 表，就是给这一层用的。
+
+现在再看我们的 hook——`scripts/hooks/PartyBattler.lua`：
 
 ```lua
 ---@class PartyBattler
@@ -168,20 +181,7 @@ end
 return PartyBattler
 ```
 
-逐行翻译：`HookSystem.hookScript(PartyBattler)`——"我要接管引擎的 PartyBattler 类"（PartyBattler 是战斗里角色形象的总管）。我们覆写它的 `setAnimation`（切换动画的方法）：**当且仅当**"苏西 + 待机动画 + 狗战斗"三个条件同时满足，就把动画换成 `battle/idle_happy`（1/6 秒每帧、循环）；其他情况原样放行——最后一行 `super.setAnimation` 就是执行引擎原来的实现。
-
-顺手说说引擎原本的 `setAnimation` 里面长什么样——其实很简单，真实源码就这几行（`src/engine/game/battle/battler.lua`）：
-
-```lua
-function Battler:setAnimation(animation, callback)
-    if not self.sprite then
-        self:createSprite()
-    end
-    return self.sprite:setAnimation(animation, callback)
-end
-```
-
-翻译一下：先确保角色身上的形象精灵存在，然后把动画描述交给精灵播放。再往里还有一层（`ActorSprite:setAnimation`，查 actor 动画表、按帧播放）——那段代码挺长，就不贴了，知道它"查表、播放"就够用；本集前面狗 actor 里那种 `animations` 表，就是给这一层用的。我们 hook 干的事，就是在它动手**之前**，把描述从"待机"换成"笑脸待机"——引擎的流程一字未改，只是这次送进来的描述不一样了。
+逐行翻译：`HookSystem.hookScript(PartyBattler)`——"我要接管引擎的 PartyBattler 类"（PartyBattler 是战斗里角色形象的总管）。我们覆写它的 `setAnimation`（切换动画的方法）：**当且仅当**"苏西 + 待机动画 + 狗战斗"三个条件同时满足，就把动画描述换成 `battle/idle_happy`（1/6 秒每帧、循环）；其他情况原样放行——最后一行 `super.setAnimation`，调用的就是上面那段引擎源码。
 
 严格说，这就是一个"在原机制**之前**插入新内容"的例子——看执行顺序：我们的代码先跑（检查条件、把动画描述换成笑脸版），**然后**才把改好的描述交给引擎原本的 `setAnimation` 执行。引擎原本的行为一个字没动，只是进来的参数被我们换过了。想在原机制**之后**插东西也简单：先调 `super`，再写你的代码——顺序反过来就行。
 
