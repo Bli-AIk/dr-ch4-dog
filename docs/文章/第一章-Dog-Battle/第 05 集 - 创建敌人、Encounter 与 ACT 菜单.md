@@ -124,7 +124,7 @@ end
 - 中文："* 你感觉你要吃点骨头了！"
 - 英文："* You feel like you're going to have a bad bone."
 
-音乐 `dog_buster` 是项目自带的曲子（`assets/music/dog_buster.ogg`）——它是别人做的曲子，我把它收进了项目，原曲视频：https://www.youtube.com/watch?v=NffMzWIkIn4，出处也记在项目 README 里。
+音乐 `dog_buster` 是项目自带的曲子（`assets/music/dog_buster.ogg`）——它是别人做的曲子，我把它收进了项目，原曲视频原链：https://www.youtube.com/watch?v=NffMzWIkIn4 ，出处也记在项目 README 里。
 
 最后是第 04 集留的悬念兑现：把 mod.json 的 `"encounter": "dummy"` 改成 `"encounter": "dog"`。启动——神烦狗站在战斗框右侧，看着你。
 
@@ -132,9 +132,11 @@ end
 
 ## 初见钩子：骇入框架源码
 
-进战斗后你可能注意到一件事：**苏西在待机时是开心的表情**。这也是狗战斗的一部分——"初见钩子"：苏西第一次见到狗，就一脸开心。
+进战斗后你可能注意到一件事：**苏西在待机时是开心的表情**——原作里苏西打战斗时可是阴着脸的。这里用的是第二章的苏西笑脸待机动画（`battle/idle_happy`），我们把它借了过来——"初见钩子"：苏西第一次见到狗，就一脸开心。（素材还是拆包来的，只是换了个表情帧用。）
 
-按常理，改苏西的动画得改引擎源码——但 Kristal 不用：`scripts/hooks/` 目录（引擎自动加载，第 04 集"位置才重要"又生效了）里的文件可以**挂接引擎类**。看 `scripts/hooks/PartyBattler.lua`：
+那这个效果怎么实现的？改引擎源码？不至于——Kristal 有 **hook（钩子）** 机制。先给没写过代码的读者说人话：引擎是别人写的代码，我们原则上不动它；hook 就是引擎留出来的"插口"——你写一段自己的代码"插"进去，引擎每次执行到对应位置时，先经过你的代码，由你决定自己处理，还是叫回引擎原来的行为。可以想象成你进不了后厨（不改引擎），但在打饭窗口递了张条子（hook）——师傅每次打饭，都会先看一眼条子。
+
+Kristal 里写 hook 的地方是 `scripts/hooks/` 目录——引擎自动加载，第 04 集"位置才重要"又生效了。看 `scripts/hooks/PartyBattler.lua`：
 
 ```lua
 ---@class PartyBattler
@@ -158,11 +160,11 @@ end
 return PartyBattler
 ```
 
-逐行翻译：`HookSystem.hookScript(PartyBattler)` 把引擎的 PartyBattler 类包了一层；覆写 `setAnimation`——**当且仅当**"苏西 + 待机动画 + 狗战斗"三个条件同时满足，就把动画换成 `battle/idle_happy`（1/6 秒每帧、循环）；其他情况原样放行（`super.setAnimation`）。
+逐行翻译：`HookSystem.hookScript(PartyBattler)`——"我要接管引擎的 PartyBattler 类"（PartyBattler 是战斗里角色形象的总管）。我们覆写它的 `setAnimation`（切换动画的方法）：**当且仅当**"苏西 + 待机动画 + 狗战斗"三个条件同时满足，就把动画换成 `battle/idle_happy`（1/6 秒每帧、循环）；其他情况原样放行——最后一行 `super.setAnimation` 就是叫回引擎原来的实现（EX01 说的"爸爸"）。
 
 中间那行 offset 复制是技术细节：开心动画没有自己的偏移数据，把待机的偏移抄一份给它，免得表情位置对不上。
 
-效果：苏西一见到狗就咧嘴笑。引擎源码一行没动——这就是"骇入框架源码"的正确姿势：**挂接，而不是篡改**。引擎要长期维护（第 01 集锁过版本），改引擎源码会留脏改动；hooks 把改动收进项目自己的目录里，跟着项目走。
+效果：苏西一见到狗就咧嘴笑，其他战斗一切照旧。引擎源码一行没动——这就是"骇入框架源码"的正确姿势：**在插口上插手，而不是篡改引擎**。引擎要长期维护（第 01 集锁过版本），改引擎源码会留脏改动；hook 把改动收进项目自己的目录里，跟着项目走。
 
 > 📷 此处插入截图：苏西在狗战斗中的开心待机
 
