@@ -73,6 +73,12 @@ just build 固定使用 Kristal v0.10.0，生成 release/debug .love、Windows x
 
 生产资产会保留语言库，禁用并剔除 object-editor、terminal-cli、编辑器配置、测试和构建文件。GitHub Actions 会在 PR/main 上验证构建；release-please 合并发布 PR 后，标签工作流会上传所有资产与 SHA256SUMS。
 
+## 素材与出处
+
+| 素材 | 出处 |
+| --- | --- |
+| 战斗音乐 dog_buster（assets/music/dog_buster.ogg） | 原曲视频：https://www.youtube.com/watch?v=NffMzWIkIn4 |
+
 ## 提交规范
 
 使用 KRISIS 风格的 Conventional Commits，摘要以简洁中文表达：
