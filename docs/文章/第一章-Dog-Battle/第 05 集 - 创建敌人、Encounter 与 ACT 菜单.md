@@ -16,7 +16,7 @@
 
 先坦白一个事实：本项目的狗敌人，第一版其实就是**复制 dummy.lua 改的**——EX01 结尾那句"第一遍抄"，你们还没开始抄——好吧，我自己先抄了（笑）。更有意思的是，我往回看我 git 历史里第一版，连本地化的 key 都没换，还在引用 dummy 的文本。抄完记得检查，别学我（笑）。
 
-不过动手抄之前，先认识一个东西——`setActor("dog")` 里那个 `"dog"` 形象是谁？答案在 `data/actors/dog.lua`。这个文件定义狗"长什么样、动画怎么播"（第 04 集目录清单里 actor 的职责）：
+不过动手抄之前，先认识一个配套文件。敌人代码里会有一句 `self:setActor("dog")`——它把敌人和一个 ID 叫 `dog` 的**形象**（actor）接起来；形象负责"长什么样、动画怎么播"，定义在 `data/actors/dog.lua`（第 04 集目录清单里 actor 的职责）：
 
 ```lua
 local actor, super = Class(Actor, "dog")
@@ -29,19 +29,20 @@ function actor:init()
     self.name = "Annoying Dog"
 
     -- Match the largest frame in the dog animations (idle_2 is 22x19).
-    -- 翻译一下：取狗动画里最大的一帧作为尺寸（idle_2 是 22x19）
+    -- 翻译：取狗动画里最大的一帧作为尺寸（idle_2 是 22x19）
     self.width = 22
     self.height = 19
 
     -- Path to this actor's sprites (defaults to "")
-    -- 翻译一下：这个形象的贴图路径（默认为空）
+    -- 翻译：这个形象的贴图路径（默认为空）
     self.path = "enemies/dog"
     -- This actor's default sprite or animation, relative to the path (defaults to "")
-    -- 翻译一下：默认动画（相对于贴图路径，默认为空）
+    -- 翻译：默认动画（相对于贴图路径，默认为空）
     self.default = "idle"
 
     -- Table of sprite animations
-    -- 翻译一下：动画表
+    -- 翻译：动画表
+    -- ["名字"] = { "贴图路径（动画自动根据文件名获取）", 帧间隔时间, 是否循环, 不循环播放完的下一个动画是什么 }
     self.animations = {
         ["idle"]  = { "idle/idle", 0.25, true },                      -- 待机
         ["speak"] = { "speak/", 1 / 6, true },                        -- 说话
@@ -51,7 +52,14 @@ function actor:init()
 end
 ```
 
-逐行看（翻译就写在注释下面一行）：`Class(Actor, "dog")`——**第二个参数就是它的 ID**；`name` 是显示名；`width`/`height` 是尺寸（22×19，动画最大帧的尺寸）；`path` 是贴图目录（`assets/sprites/` 下的 `enemies/dog`，素材节那个文件夹）；`default` 是默认动画。最下面的 `animations` 是动画目录——每个动画一行 `{ 帧序列, 每帧秒数, 是否循环 }`，还能写 `next`：播完自动切回哪个动画。素材节说"动画帧都在里面"，配上这张表，帧才真正被组织起来。（它还有几个动画——car、shock、sleep——留给后面集数，现在先认识这四个。）
+逐行看（翻译就写在注释下面一行）：`Class(Actor, "dog")`——**第二个参数就是它的 ID**；
+
+`name` 是显示名；`width`/`height` 是尺寸（22×19，动画最大帧的尺寸）；
+
+`path` 是贴图目录（`assets/sprites/` 下的 `enemies/dog`，素材节那个文件夹）；
+`default` 是默认动画。
+
+最下面的 `animations` 是动画目录——每个动画一行 `{ 帧序列, 每帧秒数, 是否循环 }`，还能写 `next`：播完自动切回哪个动画。素材节说"动画帧都在里面"，配上这张表，帧才真正被组织起来。（它还有几个动画——car、shock、sleep——留给后面集数，现在先认识这四个。）
 
 现在再回来看敌人。`scripts/battle/enemies/dog.lua`：
 
