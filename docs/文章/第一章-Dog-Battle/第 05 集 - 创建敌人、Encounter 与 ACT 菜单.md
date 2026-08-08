@@ -195,7 +195,31 @@ return PartyBattler
 
 ## ACT 菜单：抚摸与讲笑话
 
-第 04 集试过 dummy 的 ACT（微笑、讲故事）——选项哪来的？敌人的 `registerAct`。给狗注册 ACT，就在 init 里加几行：
+第 04 集试过 dummy 的 ACT（微笑、讲故事）——选项哪来的？先说关键的：ACT 名字和描述这些文本，都来自敌人的 `applyLocalization`——就是 init 第一行调用的那个（第 04 集 dummy.lua 里也见过它）。它把语言文件里的文本取出来，挂到 `self` 上：
+
+```lua
+-- 在 applyLocalization 里：
+self.act_pet = Game:loc("act_dog_pet")
+self.act_pet_description = Game:loc("act_dog_pet_description")
+self.act_pet_party = self.act_pet  -- 队伍版抚摸沿用同一个名字
+self.act_tell_joke = Game:loc("act_dog_tell_joke")
+self.act_tell_joke_description = Game:loc("act_dog_tell_joke_description")
+```
+
+（这就是前面说的"存进代码变量"——`Game:loc` 的用武之地。至于 `self` 为什么能凭空挂一个压根没声明过的属性——Lua 的魔法（草）：EX01 说过，表什么都能装，`self` 就是个表，赋值即创建，不用提前声明。）
+
+取出来的文本，就是语言文件里的这些键值对——`lang/zh_hans.json`（`lang/en.json` 里是英文版，加 key 的流程和第 04 集一样）：
+
+```json
+"act_dog_pet": "抚摸",
+"act_dog_pet_description": "前提是\n能碰到",
+"act_dog_tell_joke": "讲笑话",
+"act_dog_tell_joke_description": "或许有\n用？"
+```
+
+"前提是能碰到"——摸都摸不到，还谈什么抚摸。这文案，自己品。
+
+字段有了，再看怎么把它们注册成 ACT——还是 `registerAct`，就在 init 里加几行：
 
 ```lua
 -- 单人 ACT：谁都能用
@@ -206,32 +230,11 @@ self:registerAct(self.act_pet_party, self.act_pet_description, {"susie", "ralsei
 self:registerAct(self.act_tell_joke, self.act_tell_joke_description, {"susie", "ralsei"}, 100)
 ```
 
-（有人会问：`self.act_pet`、`self.act_pet_description` 是哪来的？没定义过啊——别慌，定义在 init 第一行调用的 `self:applyLocalization()` 里（第 04 集 dummy.lua 里也见过它）：
-
-```lua
--- 在 applyLocalization 里：
-self.act_pet = Game:loc("act_dog_pet")
-self.act_pet_description = Game:loc("act_dog_pet_description")
-```
-
-`act_tell_joke` 和它的描述同理。这就是前面说的"存进代码变量"——`Game:loc` 的用武之地。至于 `self` 为什么能凭空挂属性：Lua 的魔法（草）——EX01 说过，表什么都能装，`self` 就是个表，赋值即创建，不用提前声明。）
-
 `registerAct` 的参数：名字、描述、能用的角色、所需 TP。
 
 抚摸有单人版（谁都能摸）和队伍版（苏西、利艾尔斯一起摸）；讲笑话是队伍版，而且要 **100 TP** 才能用。
 
 讲笑话的 TP 门槛值得单独说：原动画里笑话出现在战斗后半段（时间轴 1:00 左右）——那是演出安排。我们把它实现成硬性条件：攒够 100 TP 才能讲。**这是原动画没考虑到的，是我们补上的设计**——演出归演出，机制归机制，两者互相成就。
-
-名字和描述都来自语言文件——加 key 的流程和第 04 集一样：`lang/zh_hans.json` 和 `lang/en.json` 各写一份，上面 `Game:loc("act_dog_pet")` 取的就是这里的 key：
-
-```json
-"act_dog_pet": "抚摸",
-"act_dog_pet_description": "前提是\n能碰到",
-"act_dog_tell_joke": "讲笑话",
-"act_dog_tell_joke_description": "或许有\n用？"
-```
-
-"前提是能碰到"——摸都摸不到，还谈什么抚摸。这文案，自己品。
 
 还有默认就有的"查看"（Check）——狗的 check 文本：
 
