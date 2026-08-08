@@ -143,7 +143,7 @@ Termux 里有两条路线，我都只做简单介绍，因为这条路很硬核�
 
 对绝大多数人，我的建议是：**别走 Termux 全环境路线**。在手机上调出完整 Linux + Kristal 的工作流，性能、输入、屏幕尺寸全都是坎。先用 acode + love for android 把"能写、能跑"的最小循环跑通，比什么都强。
 
-顺带一提：在 Termux 里用 Git 操作项目，和 Linux 完全一样——`pkg install git` 装好，clone、push、pull 全套都有。具体的 Git 操作，我们留到番外 EX04（Git 与 GitHub 协作）再细讲。
+顺带一提：在 Termux 里用 Git 操作项目，和 Linux 完全一样——`pkg install git` 装好，clone、push、pull 全套都有。具体的 Git 操作，我们留到番外 EX03（Git 与 GitHub 协作）再细讲。
 
 > 📷 此处插入截图：Termux 终端界面（可选）
 
