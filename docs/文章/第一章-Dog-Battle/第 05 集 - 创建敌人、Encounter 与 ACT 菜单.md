@@ -103,13 +103,17 @@ local Dog, super = Class(Encounter)
 function Dog:init()
     super.init(self)
 
-    self.text = Game:loc("encounter_dog_start")
+    self.text = "{encounter_dog_start}"
     self.music = "dog_buster"
     self:addEnemy("dog")
 end
 ```
 
-三行配置，三件事：开场文本、战斗音乐、敌人名单。先看第一行——这里得先认识一下这套文本 API。**写文本最常用的是 {key} 内联引用**：在写文本的位置上直接写 `{key}`，渲染时自动替换成当前语言的文本——这是最贴近 Kristal 原生写法的形式，原来这里就是直接写文本的。而在某些不支持这种解析的地方——比如需要把文本存进代码变量、当数据处理——就用 **`Game:loc("key")` 函数**把它取回来（取回来的就是一个普通字符串）。`self.text` 正是要存进对象的文本，所以这里写 `Game:loc("encounter_dog_start")`。开场文本 `encounter_dog_start` 在语言文件里，中英各玩各的双关：
+三行配置，三件事：开场文本、战斗音乐、敌人名单。先看第一行——`self.text = "{encounter_dog_start}"`：**写文本，用 {key} 内联引用**——在写文本的位置上直接写 `{key}`，渲染时自动替换成当前语言的文本。这是最贴近 Kristal 原生写法的形式：原来这里就是直接写文本的，现在换成 {key}，翻译系统就接管了。
+
+（`self.text` 虽然是个变量，但它的内容是"要显示的台词"，显示时照样走 {key} 解析。）
+
+`Game:loc("key")` 函数也存在，但它是**不常用的特殊情况 API**——文本要存进代码变量、当数据处理、或者不经过文本系统渲染时，才用它把文本取回来（取回来的是一个普通字符串）。开场文本 `encounter_dog_start` 在语言文件里，中英各玩各的双关：
 
 - 中文："* 你感觉你要吃点骨头了！"
 - 英文："* You feel like you're going to have a bad bone."
@@ -173,7 +177,7 @@ self:registerAct(self.act_tell_joke, self.act_tell_joke_description, {"susie", "
 
 讲笑话的 TP 门槛值得单独说：原动画里笑话出现在战斗后半段（时间轴 1:00 左右）——那是演出安排。我们把它实现成硬性条件：攒够 100 TP 才能讲。**这是原动画没考虑到的，是我们补上的设计**——演出归演出，机制归机制，两者互相成就。
 
-名字和描述都来自语言文件——加 key 的流程和第 04 集一样：`lang/zh_hans.json` 和 `lang/en.json` 各写一份，`Game:loc("act_dog_pet")` 取用：
+名字和描述都来自语言文件——加 key 的流程和第 04 集一样：`lang/zh_hans.json` 和 `lang/en.json` 各写一份。ACT 名字要存进代码变量，这正是前面说的 `Game:loc("key")` 适用的情况：
 
 ```json
 "act_dog_pet": "抚摸",
