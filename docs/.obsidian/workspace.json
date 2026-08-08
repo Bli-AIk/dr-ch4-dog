@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "00-序章/第 00 集 - 欢迎来到 Kristal.md",
+                "file": "文章/番外/EX04 - 项目目录、素材管理与版本管理.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "第 00 集 - 欢迎来到 Kristal"
+              "title": "EX04 - 项目目录、素材管理与版本管理"
             }
           }
         ]
@@ -41,7 +41,9 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": false
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-folder-closed",
               "title": "文件列表"
@@ -185,36 +187,41 @@
   },
   "active": "3c56375e988c91f0",
   "lastOpenFiles": [
-    "00-序章/第 03 集 - 如何使用 Kristal Wiki、API Reference 与示例项目.md",
-    "00-序章/第 01 集 - Windows 开发环境搭建（VSCode）.md",
-    "00-序章/第 00 集 - 欢迎来到 Kristal.md",
-    "01-第一章-Dog-Battle/第 06 集 - 创建敌人、Encounter 与 ACT 菜单.md",
+    "sedhiJLLP",
+    "01-第一章-Dog-Battle/XXsBP62q",
+    "01-第一章-Dog-Battle/第 11 集 - 打包发布你的第一个 Kristal 游戏.md",
+    "01-第一章-Dog-Battle/第 08 集 - 第三回合：随机弹幕、物理效果与敌人演出.md",
+    "01-第一章-Dog-Battle/第 07 集 - 第二回合：演出、炮击、特殊反应 与 嵌套弹幕.md",
+    "01-第一章-Dog-Battle/第 06 集 - 第一回合：\"经典弹幕\".md",
+    "01-第一章-Dog-Battle/第 05 集 - 创建敌人、Encounter 与 ACT 菜单.md",
+    "01-第一章-Dog-Battle/第 04 集 - 创建项目与进入第一场战斗.md",
+    "01-第一章-Dog-Battle/第 10 集 - 游戏测试、Debug 与迭代开发.md",
+    "01-第一章-Dog-Battle/第 09 集 - 战斗收尾：胜利、失败、对话与完整流程.md",
     "01-第一章-Dog-Battle/第 05 集 - 创建项目与进入第一场战斗.md",
-    "00-序章/第 04 集 - 如何拆解一个 Deltarune 同人游戏（Dog Battle 项目规划）.md",
-    "00-序章/第 02 集 - Linux 与 Android Termux 开发环境（番外）.md",
-    "01-第一章-Dog-Battle/第 12 集 - 打包发布你的第一个 Kristal 游戏.md",
-    "01-第一章-Dog-Battle/第 11 集 - 游戏测试、Debug 与迭代开发.md",
-    "01-第一章-Dog-Battle/第 10 集 - 战斗收尾：胜利、失败、对话与完整流程.md",
-    "01-第一章-Dog-Battle/第 09 集 - 第三回合：随机弹幕、物理效果与敌人演出.md",
-    "01-第一章-Dog-Battle/第 08 集 - 第二回合：演出、炮击、特殊反应 与 嵌套弹幕.md",
-    "01-第一章-Dog-Battle/第 07 集 - 第一回合：\"经典弹幕\".md",
-    "05-番外/EX04 - 如何合理获取原作素材.md",
-    "05-番外/EX05 - 常见问题（FAQ）.md",
-    "05-番外/EX01 - Lua 入门（按需补充）.md",
+    "01-第一章-Dog-Battle/第 4 集 - 创建项目与进入第一场战斗.md",
+    "01-第一章-Dog-Battle/第 5 集 - 创建敌人、Encounter 与 ACT 菜单.md",
+    "01-第一章-Dog-Battle/第 6 集 - 第一回合：\"经典弹幕\".md",
+    "01-第一章-Dog-Battle/第 7 集 - 第二回合：演出、炮击、特殊反应 与 嵌套弹幕.md",
+    "01-第一章-Dog-Battle/第 8 集 - 第三回合：随机弹幕、物理效果与敌人演出.md",
+    "01-第一章-Dog-Battle/第 9 集 - 打包发布你的第一个 Kristal 游戏.md",
+    "01-第一章-Dog-Battle/第 10 集 - 打包发布你的第一个 Kristal 游戏.md",
+    "文章/番外/EX04 - 项目目录、素材管理与版本管理.md",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.f304f4f9cfe0",
+    "文章/番外/EX04 - 项目目录、素材管理与版本管理.md.tmp.50880.8bd4becb0726",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.130a57e1f1b2",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.e08943757674",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.afcd3c6f8459",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.31069c0b5b1b",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.fe533845a82a",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.815530b4f023",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.73e7cbd80ee8",
+    "文章/番外/EX02 - 如何合理获取原作素材.md",
+    "05-番外/EX03 - 项目目录、素材管理与版本管理.md",
     "05-番外/EX03 - Git 与 GitHub 协作.md",
-    "development.zh-hans.md",
-    "课程总览.md",
-    "05-番外/EX02 - 项目目录、素材管理与版本管理.md",
-    "05-番外",
-    "序章/第.md",
-    "序章",
-    "ch1-12-package-and-release.md",
-    "01-第一章-Dog-Battle",
-    "00-序章",
-    "course-overview.md",
-    "序章/第 04 集 - 如何拆解一个 Deltarune 同人游戏（Dog Battle 项目规划）.md",
-    "序章/第 03 集 - 如何使用 Kristal Wiki、API Reference 与示例项目.md",
-    "序章/第 02 集 - Linux 与 Android Termux 开发环境（番外）.md",
-    "未命名"
+    "05-番外/EX04 - 项目目录、素材管理与版本管理.md",
+    "05-番外/_tmp-y.md",
+    "05-番外/_tmp-x.md",
+    "文章/番外/EX01 - Lua 速通（按需补充）.md"
   ]
 }
