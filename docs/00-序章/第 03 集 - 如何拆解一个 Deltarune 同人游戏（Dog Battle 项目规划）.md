@@ -1,6 +1,6 @@
-# 第 04 集：如何拆解一个 Deltarune 同人游戏（Dog Battle 项目规划）
+# 第 03 集：如何拆解一个 Deltarune 同人游戏（Dog Battle 项目规划）
 
-> [[课程总览|返回课程总览]] · [[00-序章/第 03 集 - 如何使用 Kristal Wiki、API Reference 与示例项目|上一集]] · [[01-第一章-Dog-Battle/第 05 集 - 创建项目与进入第一场战斗|下一集]]
+> [[课程总览|返回课程总览]] · [[00-序章/第 02 集 - 如何使用 Kristal Wiki、API Reference 与示例项目|上一集]] · [[01-第一章-Dog-Battle/第 05 集 - 创建项目与进入第一场战斗|下一集]]
 
 ## 开场
 
