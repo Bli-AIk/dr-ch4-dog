@@ -22,4 +22,16 @@ function PapBone:init(x, y, length, anchor)
     self.damage = 66
 end
 
+--- 保底：不管打中谁，都打不死人——最多打到剩 1 点血
+function PapBone:getDamage()
+    local min_hp = math.huge
+    for _, battler in ipairs(Game.battle.party) do
+        min_hp = math.min(min_hp, battler.chara:getHealth())
+    end
+    if min_hp <= 1 then
+        return 0
+    end
+    return math.min(self.damage, min_hp - 1)
+end
+
 return PapBone
