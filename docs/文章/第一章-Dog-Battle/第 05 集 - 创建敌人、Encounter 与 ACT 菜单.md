@@ -1,0 +1,255 @@
+# 第 05 集：创建敌人、Encounter 与 ACT 菜单
+
+欢迎！这是《从零做一个 Deltarune 同人游戏》系列的第 5 集，也是**第一章的第二集**。
+
+第 04 集结尾的预告还记得吧？"下一集，把训练人偶换成真正的神烦狗"。对照第 03 集的目标清单，本集要给两行打勾：**敌人能出现在战斗里**和**ACT 菜单**。做完这两件事，"对手"和"互动"就都齐了——弹幕要等下一集才开始。
+
+## 素材：全部来自拆包
+
+做敌人之前先解决素材。神烦狗（Annoying Dog）是 Deltarune 原作里的梗角色——就是那只时不时乱入的白狗。它的素材怎么来的？**全部来自拆包原作**，包括后面会用到的转圈（spin）动画。
+
+拆包素材能用，但怎么用才合规，番外 EX02 把原则讲透了——出处要标、边界要守。这篇解决"素材从哪来"，那篇解决"拿来的东西怎么用"。
+
+素材放哪？`assets/sprites/enemies/dog/`（第 02 集目录树里的素材目录，狗自己的文件夹）。idle、bark、speak……动画帧都在里面。
+
+## 从 dummy 到 dog：创建敌人
+
+先坦白一个事实：本项目的狗敌人，第一版其实就是**复制 dummy.lua 改的**——EX01 结尾那句"第一遍抄"，你们还没开始抄，我自己先抄了。更有意思的是，git 历史里那第一版连本地化的 key 都没换，还在引用 dummy 的文本。抄完记得检查，别学我（笑）。
+
+黑历史就不展示了，直接看"正确抄完"的样子。`scripts/battle/enemies/dog.lua`：
+
+```lua
+local Dog, super = Class(EnemyBattler)
+
+function Dog:init()
+    super.init(self)
+    self:applyLocalization()
+    self:setActor("dog")
+
+    self.max_health = 450
+    self.health = 450
+    self.attack = 4
+    self.defense = 0
+    self.money = 100
+end
+```
+
+眼熟吗？第 04 集我们逐行看过 dummy.lua 的同款代码——`Class(EnemyBattler)` 继承、`init` 里设数值、`self` 挂属性。改动其实只有两处：类名 `Dummy` 变 `Dog`，`setActor("dummy")` 变 `setActor("dog")`。数值还是 450 血、4 攻——先抄着，后面再调。
+
+这里顺手把三个容易混的概念理清：
+
+- **Enemy（敌人）**：`enemies/dog.lua`——数值和行为（血量、攻击、ACT 选项）；
+- **Encounter（遭遇战）**：`encounters/dog.lua`——战斗的"容器"（敌人是谁、开场说什么、回合怎么流转）；
+- **Actor（形象）**：`data/actors/dog.lua`——长什么样。狗的 actor 定义：22×19 像素、贴图路径 `enemies/dog`、默认动画 idle。
+
+`setActor("dog")` 让敌人和形象按 ID 对接——第 04 集说的"ID 是胶水"，又一次生效。
+
+（本集做完后，狗的"回合"还是借模板的弹幕（basic 那些）——你先别急着嫌"这弹幕不像狗"，第 06-08 集，三波弹幕挨个换成我们自己的。）
+
+## 一个真正的 Encounter
+
+敌人有了，得有个战斗把它装起来。`scripts/battle/encounters/dog.lua`：
+
+```lua
+local Dog, super = Class(Encounter)
+
+function Dog:init()
+    super.init(self)
+
+    self.text = Game:loc("encounter_dog_start")
+    self.music = "dog_buster"
+    self:addEnemy("dog")
+end
+```
+
+三行配置，三件事：开场文本、战斗音乐、敌人名单。开场文本 `encounter_dog_start` 在语言文件里，中英各玩各的双关：
+
+- 中文："* 你感觉你要吃点骨头了！"
+- 英文："* You feel like you're going to have a bad bone."
+
+音乐 `dog_buster` 是项目自带的曲子（`assets/music/dog_buster.ogg`）——名字懂的都懂。
+
+最后是第 04 集留的悬念兑现：把 mod.json 的 `"encounter": "dummy"` 改成 `"encounter": "dog"`。启动——神烦狗站在战斗框右侧，看着你。
+
+> 📷 此处插入截图：神烦狗出现在战斗中
+
+## 初见钩子：骇入框架源码
+
+进战斗后你可能注意到一件事：**苏西在待机时是开心的表情**。这也是狗战斗的一部分——"初见钩子"：苏西第一次见到狗，就一脸开心。
+
+按常理，改苏西的动画得改引擎源码——但 Kristal 不用：`scripts/hooks/` 目录（引擎自动加载，第 04 集"位置才重要"又生效了）里的文件可以**挂接引擎类**。看 `scripts/hooks/PartyBattler.lua`：
+
+```lua
+---@class PartyBattler
+local PartyBattler, super = HookSystem.hookScript(PartyBattler)
+
+function PartyBattler:setAnimation(animation, callback)
+    if animation == "battle/idle"
+        and self.chara
+        and self.chara.id == "susie"
+        and Game.battle
+        and Game.battle.encounter
+        and Game.battle.encounter.id == "dog"
+    then
+        self.actor.offsets["battle/idle_happy"] = self.actor.offsets["battle/idle"] or { 0, 0 }
+        animation = { "battle/idle_happy", 1 / 6, true }
+    end
+
+    return super.setAnimation(self, animation, callback)
+end
+
+return PartyBattler
+```
+
+逐行翻译：`HookSystem.hookScript(PartyBattler)` 把引擎的 PartyBattler 类包了一层；覆写 `setAnimation`——**当且仅当**"苏西 + 待机动画 + 狗战斗"三个条件同时满足，就把动画换成 `battle/idle_happy`（1/6 秒每帧、循环）；其他情况原样放行（`super.setAnimation`）。
+
+中间那行 offset 复制是技术细节：开心动画没有自己的偏移数据，把待机的偏移抄一份给它，免得表情位置对不上。
+
+效果：苏西一见到狗就咧嘴笑。引擎源码一行没动——这就是"骇入框架源码"的正确姿势：**挂接，而不是篡改**。引擎要长期维护（第 01 集锁过版本），改引擎源码会留脏改动；hooks 把改动收进项目自己的目录里，跟着项目走。
+
+> 📷 此处插入截图：苏西在狗战斗中的开心待机
+
+## ACT 菜单：抚摸与讲笑话
+
+第 04 集试过 dummy 的 ACT（微笑、讲故事）——选项哪来的？敌人的 `registerAct`。给狗注册 ACT，就在 init 里加几行：
+
+```lua
+-- 单人 ACT：谁都能用
+self:registerAct(self.act_pet, self.act_pet_description)
+-- 队伍 ACT：苏西和兰博限定的抚摸
+self:registerAct(self.act_pet_party, self.act_pet_description, {"susie", "ralsei"})
+-- 队伍 ACT：讲笑话，需要 100 TP
+self:registerAct(self.act_tell_joke, self.act_tell_joke_description, {"susie", "ralsei"}, 100)
+```
+
+`registerAct` 的参数：名字、描述、能用的角色、所需 TP。抚摸有单人版（谁都能摸）和队伍版（苏西、兰博一起摸）；讲笑话是队伍版，而且要 **100 TP** 才能用。
+
+讲笑话的 TP 门槛值得单独说：原动画里笑话出现在战斗后半段（时间轴 1:00 左右）——那是演出安排。我们把它实现成硬性条件：攒够 100 TP 才能讲。**这是原动画没考虑到的，是我们补上的设计**——演出归演出，机制归机制，两者互相成就。
+
+名字和描述都来自语言文件——加 key 的流程和第 04 集一样：`lang/zh_hans.json` 和 `lang/en.json` 各写一份，`Game:loc("act_dog_pet")` 取用：
+
+```json
+"act_dog_pet": "抚摸",
+"act_dog_pet_description": "前提是\n能碰到",
+"act_dog_tell_joke": "讲笑话",
+"act_dog_tell_joke_description": "或许有\n用？"
+```
+
+"前提是能碰到"——摸都摸不到，还谈什么抚摸。这文案，自己品。
+
+还有默认就有的"查看"（Check）——狗的 check 文本：
+
+> 攻击 1 防御 1
+> * 吸收了一件神器与某件物品！
+> * 它体内有什么阻止你碰到它。
+
+……它体内有什么，现在还不是揭晓的时候。
+
+## 讲笑话：一场小型演出
+
+选了讲笑话，光弹一句文本太干——这是一场小型演出。`onAct` 里一句话启动：
+
+```lua
+local cutscene = Game.battle:startActCutscene("dog", "tell_joke")
+```
+
+`startActCutscene` 按 ID 找 `cutscenes/dog.lua` 里的演出函数（第 04 集说过：cutscene 是"战斗演出"）。演出内容的核心是几行 `cutscene:text`：
+
+```lua
+tell_joke = function(cutscene)
+    cutscene:text("{battle_dog_tell_joke_1}")          -- 旁白
+
+    cutscene:text(                                     -- 苏西的台词
+        "{battle_dog_tell_joke_susie}",
+        "nervous",                                     -- 表情
+        "susie"                                        -- 立绘角色
+    )
+    ...
+end
+```
+
+`cutscene:text(文本key, 表情, 角色)`——文本从语言文件来，表情和角色指定谁在说话、什么表情。整段笑话的文案：大家一起想了一个烂双关笑话……苏西（紧张）："呃……为什么狗不能当歌手？"兰博（脸红）："因为它会'汪'词！"苏西："……"旁白："狗狗完全听不懂！"——两句旁白之间还嵌着 `[sound:mus_rimshot]`（经典的讲完笑话鼓点），以及 `[react:susie_reaction]` 触发苏西的反应。
+
+文本里嵌音效、嵌反应——这就是 i18n 库的魔法：**演出点跟着翻译走**，而不是写死在代码里。
+
+> 📷 此处插入截图：讲笑话演出（兰博说完，苏西一脸无语）
+
+## 摸狗 MISS：文本里的方法调用
+
+队伍版摸狗（三个人一起摸）的演出更有意思——它不走文件，直接内联一个"函数式 cutscene"：
+
+```lua
+Game.battle:startActCutscene(function(cutscene)
+    cutscene:text("{act_dog_pet_party_text}", {
+        functions = {
+            dog_pet_miss = function()
+                self:statusMessage("msg", "miss_gold")
+            end
+        }
+    })
+end)
+```
+
+对应的文本：
+
+> * 大家一起去摸狗狗...[wait:5][func:dog_pet_miss][wait:1s]
+> * 但是被它轻易地躲开了！
+
+看到 `[func:dog_pet_miss]` 了吗？**文本播到这个地方时，会调用代码里 `functions` 表提供的同名函数**——在这里弹出一个金色的 MISS。文本和逻辑彻底分离：翻译随便改，演出点纹丝不动。这也是我们之后写所有"文本触发事件"的通用手法。
+
+至于 MISS 为什么是金色的——下一节。
+
+## FIGHT：金色 MISS
+
+还记得第 02 集 API Reference 的例子吗——"想攻击敌人造不成伤害"？现在轮到我们亲手写。狗敌人加两个方法：
+
+```lua
+-- 狗闪避一切攻击，不吃任何伤害
+function Dog:getAttackDamage(damage, battler, points)
+    return 0
+end
+
+function Dog:hurt(amount, battler, on_defeat, color, show_status, attacked)
+    local sprite = self:getActiveSprite()
+    if not sprite or sprite.anim ~= "spin" then
+        self:setAnimation("spin")
+    end
+    if show_status ~= false then
+        self:statusMessage("msg", "miss_gold")
+    end
+end
+```
+
+`getAttackDamage` 返回 0——伤害计算出来直接归零，这是"打不死的狗"的数值层。第二层在 `hurt`（受伤时触发）：播放转圈（spin）动画 + 弹金色 MISS——原动画里那个标志性的"被打了转圈圈"演出。
+
+数值上打不动，画面上闪得飞起——这正是原动画"打不死的狗"的完整还原。
+
+> 📷 此处插入截图：攻击狗，金色 MISS
+
+## MERCY：啥也别加了
+
+最后，MERCY——本集**什么都不用加**。
+
+理由先说透：Kristal 的 ACT 不会自动送饶恕值，送不送全看你的 onAct 里写不写 `addMercy`。模板的 dummy 写了（微笑 +100、X-Action +50）——那是模板的教学演示。我们写狗的 ACT 时，一行加值都没写：**狗的 ACT 不给饶恕值**。这也是本项目对 MERCY 唯一的改动——去 diff 我们的代码的话，会发现"删掉"比"新增"还干净。
+
+所以现在打狗战斗，饶恕值是攒不起来的——这正是我们想要的：这只狗现在还"饶不了"。怎么才能饶恕它、战斗怎么算赢，是第 09 集"胜负流程"的事。本集别动手，但别把它漏了：MERCY 是那五个选项里迟早要接的一环。
+
+## 检查本集成果
+
+对照第 03 集清单：
+
+- **敌人能出现在战斗里——打勾**：神烦狗站在战斗框右侧，待机动画播着；
+- **ACT 菜单——打勾**：抚摸（单人/队伍）、讲笑话、查看，齐全。
+
+链条也更新了一截：
+
+```text
+love . → 引擎加载 mod → mod.json 指定 encounter "dog" → encounters/dog.lua 说"敌人是 dog"
+→ enemies/dog.lua 定义数值和 ACT → 战斗开始
+```
+
+和第 04 集相比，多出来的环节——敌人、遭遇战、ACT、钩子、演出——全是**我们亲手写的**了。弹幕还是模板的，那是下一集开始的主菜。
+
+## 结尾
+
+三件套齐了：对手（敌人）、舞台（Encounter）、互动（ACT 菜单）。但 Deltarune 战斗的魂——弹幕——还是借来的。下一集，第一回合："经典弹幕"。骨头架子，从右边飞过来。
