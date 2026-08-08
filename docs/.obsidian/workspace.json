@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "文章/番外/EX02 - 如何合理获取原作素材.md",
+                "file": "01-第一章-Dog-Battle/第 05 集 - 创建项目与进入第一场战斗.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "EX02 - 如何合理获取原作素材"
+              "title": "第 05 集 - 创建项目与进入第一场战斗"
             }
           }
         ]
@@ -187,23 +187,24 @@
   },
   "active": "3c56375e988c91f0",
   "lastOpenFiles": [
-    "文章/番外/EX00 - Linux 与 Android Termux 开发环境（番外）.md.tmp.50880.49a7a594a16a",
-    "文章/序章/第 01 集 - Windows 开发环境搭建（VSCode）.md.tmp.50880.db46c5932a9d",
-    "课程总览.md.tmp.50880.e1bd08532131",
-    "05-番外/EX05 - 常见问题（FAQ）.md.tmp.50880.13360f05795c",
-    "05-番外/EX02 - 如何合理获取原作素材.md.tmp.50880.1d57778c489a",
-    "05-番外/EX04 - 项目目录、素材管理与版本管理.md.tmp.50880.42df72ca5725",
-    "05-番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.513292f03c31",
+    "文章/番外/EX04 - 项目目录、素材管理与版本管理.md",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.f304f4f9cfe0",
+    "文章/番外/EX04 - 项目目录、素材管理与版本管理.md.tmp.50880.8bd4becb0726",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.130a57e1f1b2",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.e08943757674",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.afcd3c6f8459",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.31069c0b5b1b",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.fe533845a82a",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.815530b4f023",
+    "文章/番外/EX03 - Git 与 GitHub 协作.md.tmp.50880.73e7cbd80ee8",
+    "文章/番外/EX04 - 项目目录、素材管理与版本管理.md.tmp.50880.4372ad287cfc",
+    "文章/番外/EX02 - 如何合理获取原作素材.md",
     "05-番外/EX03 - 项目目录、素材管理与版本管理.md",
     "05-番外/EX03 - Git 与 GitHub 协作.md",
     "05-番外/EX04 - 项目目录、素材管理与版本管理.md",
     "05-番外/_tmp-y.md",
     "05-番外/_tmp-x.md",
-    "文章/番外/EX02 - 如何合理获取原作素材.md",
-    "文章/番外/EX02 - 如何合理获取原作素材.md.tmp.50880.e8bcc6567675",
-    "文章/番外/EX02 - 如何合理获取原作素材.md.tmp.50880.e97fe5b4a3ed",
-    "文章/番外/EX02 - 如何合理获取原作素材.md.tmp.50880.202efab7a1c8",
-    "文章/番外/EX02 - 如何合理获取原作素材.md.tmp.50880.30278e3bb039",
     "文章/番外/EX01 - Lua 速通（按需补充）.md",
     "文章/序章/第 02 集 - 如何使用 Kristal Wiki、API Reference 与示例项目.md",
     "文章/番外/EX01 - Lua 入门（按需补充）.md",
@@ -220,8 +221,6 @@
     "05-番外/_tmp-c.md",
     "05-番外/_tmp-b.md",
     "05-番外/_tmp-a.md",
-    "01-第一章-Dog-Battle/第 05 集 - 创建项目与进入第一场战斗.md",
-    "文章/序章/第 00 集 - 欢迎来到 Kristal.md",
-    "00-序章/第 03 集 - 如何使用 Kristal Wiki、API Reference 与示例项目.md"
+    "01-第一章-Dog-Battle/第 05 集 - 创建项目与进入第一场战斗.md"
   ]
 }
