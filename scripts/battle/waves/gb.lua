@@ -84,36 +84,27 @@ local CENTER_RECTANGLE_END_SCALE = 0
 -- 回合结束前的额外缓冲时长
 local WAVE_BUFFER = 1 / 3
 
-local GBCircle, circle_super = Class(Object)
+local GBCircle, circle_super = Class(Ellipse)
 
 function GBCircle:init(x, y, radius)
-    circle_super.init(self, x, y, radius * 2, radius * 2)
+    circle_super.init(self, x, y, radius, radius)
 
     self.radius = radius
     self.alpha = 0
     self.white_amount = 0
     self.time = 0
-    -- 迷雾 shader：引擎启动时已预编译缓存，从资产表直接取
-    self.shader = Assets.getShader("gb_mist")
+    -- 迷雾 shader：vars 支持函数值，每帧求值送进 shader
+    self:addFX(ShaderFX("gb_mist", {
+        time = function() return self.time end,
+        white_amount = function() return self.white_amount end,
+    }))
 end
 
 function GBCircle:update()
     circle_super.update(self)
+    -- radius 被外面 tween 驱动，同步成椭圆的实际大小
+    self:setSize(self.radius * 2, self.radius * 2)
     self.time = self.time + DT
-end
-
-function GBCircle:draw()
-    local old_shader = love.graphics.getShader()
-    local old_r, old_g, old_b, old_a = love.graphics.getColor()
-
-    self.shader:send("time", self.time)
-    self.shader:send("white_amount", self.white_amount)
-
-    love.graphics.setShader(self.shader)
-    love.graphics.setColor(1, 1, 1, self.alpha)
-    love.graphics.circle("fill", 0, 0, self.radius, CIRCLE_SEGMENTS)
-    love.graphics.setColor(old_r, old_g, old_b, old_a)
-    love.graphics.setShader(old_shader)
 end
 
 local GBParticle, particle_super = Class(Object)
