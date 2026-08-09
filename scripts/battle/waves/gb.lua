@@ -21,9 +21,6 @@ local CIRCLE_START_RADIUS = 100
 local CIRCLE_MIN_RADIUS = 0
 -- 圆形效果从大变小的时长
 local CIRCLE_INTRO_TIME = 9 / FPS
--- 圆形绘制使用的分段数
-local CIRCLE_SEGMENTS = 96
-
 -- 白色粒子的最短生成间隔
 local PARTICLE_MIN_SPAWN_INTERVAL = 1 / FPS / 10
 -- 白色粒子的最长生成间隔
@@ -107,10 +104,10 @@ function GBCircle:update()
     self.time = self.time + DT
 end
 
-local GBParticle, particle_super = Class(Object)
+local GBParticle, particle_super = Class(Ellipse)
 
 function GBParticle:init(x, y, target_x, target_y, radius, travel_time)
-    particle_super.init(self, x, y, radius * 2, radius * 2)
+    particle_super.init(self, x, y, radius, radius)
 
     self.start_x = x
     self.start_y = y
@@ -135,14 +132,6 @@ function GBParticle:update()
     if self.progress >= 1 then
         self:remove()
     end
-end
-
-function GBParticle:draw()
-    local old_r, old_g, old_b, old_a = love.graphics.getColor()
-
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.circle("fill", 0, 0, self.radius, CIRCLE_SEGMENTS)
-    love.graphics.setColor(old_r, old_g, old_b, old_a)
 end
 
 local function getWaveTime()
