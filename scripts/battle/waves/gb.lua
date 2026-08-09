@@ -84,9 +84,6 @@ local CENTER_RECTANGLE_END_SCALE = 0
 -- 回合结束前的额外缓冲时长
 local WAVE_BUFFER = 1 / 3
 
--- 圆形使用的迷雾 shader 文件
-local MIST_SHADER_PATH = Mod.info.path .. "/assets/shaders/gb_mist.frag"
-
 local GBCircle, circle_super = Class(Object)
 
 function GBCircle:init(x, y, radius)
@@ -96,7 +93,8 @@ function GBCircle:init(x, y, radius)
     self.alpha = 0
     self.white_amount = 0
     self.time = 0
-    self.shader = love.graphics.newShader(MIST_SHADER_PATH)
+    -- 迷雾 shader：引擎启动时已预编译缓存，从资产表直接取
+    self.shader = Assets.getShader("gb_mist")
 end
 
 function GBCircle:update()
