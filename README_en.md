@@ -27,7 +27,7 @@ The template uses dr-ch4-dog as its Mod ID. Change the ID, display name, version
 - Kristal v0.10.0 and LÖVE 11.5 for local runs and standalone builds.
 - LuaJIT for syntax checks and runtime support.
 - kristal-i18n for English and Simplified Chinese localization.
-- object-editor for development-only scene editing; release packages exclude it.
+- kristal-object-selector-plus for development-only scene editing; release packages exclude it.
 - terminal-cli for interactive Lua debugging in the development terminal; release packages exclude it.
 - kristal-debug-tools for reusable battle startup debugging; release packages exclude it.
 - .emacs and .helix for LuaLS, Kristal paths, and launch helpers.
