@@ -5,10 +5,10 @@
 
 > 当前状态：可作为新 Kristal Mod 的开发模板使用。
 
-**dr-ch4-dog** 是一个标准 Lua Kristal v0.10 模板。它保留可运行的 starter map、Dummy 战斗和对象事件，并将简体中文语言库、开发期 kristal-object-selector-plus、terminal-cli、Emacs 和 Helix 配置组织为可更新的子模块。
+**dr-ch4-dog** 是一个标准 Lua Kristal 模板。它保留可运行的 starter map、Dummy 战斗和对象事件，并将简体中文语言库、开发期 kristal-object-selector-plus、terminal-cli、Emacs 和 Helix 配置组织为可更新的子模块。
 
-| 简体中文 | English |
-| --- | --- |
+| 简体中文 | English                 |
+| -------- | ----------------------- |
 | 简体中文 | [English](README_en.md) |
 
 ## 特性
@@ -33,15 +33,14 @@
 
 ### 依赖
 
-| 工具 | 用途 |
-| --- | --- |
-| Git | 获取模板和子模块。 |
-| LÖVE 11.5 | 运行 Kristal。 |
-| Kristal v0.10.0 | 本地运行与独立包基线。 |
-| LuaJIT | Lua 语法检查和运行时。 |
-| rsync、zip、unzip、Python 3 | 构建发行包。 |
-| just | 运行共享 Kristal 调试启动器。 |
-| Emacs 30+ 或 Helix、lua-language-server | 可选编辑器支持。 |
+| 工具                                    | 用途                          |
+| --------------------------------------- | ----------------------------- |
+| Git                                     | 获取模板和子模块。            |
+| LÖVE 11.5                               | 运行 Kristal。                |
+| LuaJIT                                  | Lua 语法检查和运行时。        |
+| rsync、zip、unzip、Python 3             | 构建发行包。                  |
+| just                                    | 运行共享 Kristal 调试启动器。 |
+| Emacs 30+ 或 Helix、lua-language-server | 可选编辑器支持。              |
 
 ### 开发
 
@@ -69,14 +68,14 @@ just run 也会查找常见的本地 Kristal 路径；开发模式下可直接�
     just build
     just build-mod
 
-just build 固定使用 Kristal v0.10.0，生成 release/debug .love、Windows x64 包；它仅修改暂存引擎副本的目标 Mod、自动启动、窗口标识和 release/debug 标志。just build-mod 生成可放入 Kristal mods/ 的生产 Mod ZIP。
+just build 固定使用 Kristal 基线，生成 release/debug .love、Windows x64 包；它仅修改暂存引擎副本的目标 Mod、自动启动、窗口标识和 release/debug 标志。just build-mod 生成可放入 Kristal mods/ 的生产 Mod ZIP。
 
 生产资产会保留语言库，禁用并剔除 kristal-object-selector-plus、terminal-cli、编辑器配置、测试和构建文件。GitHub Actions 会在 PR/main 上验证构建；release-please 合并发布 PR 后，标签工作流会上传所有资产与 SHA256SUMS。
 
 ## 素材与出处
 
-| 素材 | 出处 |
-| --- | --- |
+| 素材                                               | 出处                                                  |
+| -------------------------------------------------- | ----------------------------------------------------- |
 | 战斗音乐 dog_buster（assets/music/dog_buster.ogg） | 原曲视频：https://www.youtube.com/watch?v=NffMzWIkIn4 |
 
 ## 提交规范

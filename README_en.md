@@ -2,7 +2,7 @@
 
 [![license](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue)](LICENSE-APACHE)
 
-**dr-ch4-dog** is a standard Lua Kristal v0.10 template. It keeps a playable starter map, Dummy battle, and object event while wiring together Simplified Chinese localization, development-only object editing and terminal debugging, and project-local Emacs and Helix configuration.
+**dr-ch4-dog** is a standard Lua Kristal template. It keeps a playable starter map, Dummy battle, and object event while wiring together Simplified Chinese localization, development-only object editing and terminal debugging, and project-local Emacs and Helix configuration.
 
 [简体中文](README.md)
 
@@ -24,7 +24,7 @@ The template uses dr-ch4-dog as its Mod ID. Change the ID, display name, version
 
 ## Tooling
 
-- Kristal v0.10.0 and LÖVE 11.5 for local runs and standalone builds.
+- Kristal and LÖVE 11.5 for local runs and standalone builds.
 - LuaJIT for syntax checks and runtime support.
 - kristal-i18n for English and Simplified Chinese localization.
 - kristal-object-selector-plus for development-only scene editing; release packages exclude it.
@@ -37,12 +37,12 @@ The template uses dr-ch4-dog as its Mod ID. Change the ID, display name, version
     just build
     just build-mod
 
-The standalone builder stages stock Kristal v0.10.0 and changes only target-Mod startup, window identity, and release/debug flags. Production packages keep localization, disable the object editor, exclude terminal-cli, and omit development files.
+The standalone builder stages stock Kristal and changes only target-Mod startup, window identity, and release/debug flags. Production packages keep localization, disable the object editor, exclude terminal-cli, and omit development files.
 
 ## Assets & Credits
 
-| Asset | Source |
-| --- | --- |
+| Asset                                                 | Source                                                      |
+| ----------------------------------------------------- | ----------------------------------------------------------- |
 | Battle music dog_buster (assets/music/dog_buster.ogg) | Original video: https://www.youtube.com/watch?v=NffMzWIkIn4 |
 
 ## License
