@@ -3,6 +3,12 @@ node_modules
 output
 dist
 
+# Local Piper runtime and generated TTS artifacts
+.venv-tts/
+.piper-voices/
+g2pW/
+audio-cache/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
